@@ -5,7 +5,8 @@ import store from './store'
 import axios from 'axios'
 import {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
-  IonRouterOutlet, IonIcon 
+  IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
+  IonItem
 } from '@ionic/vue';
 import '@ionic/core/css/ionic.bundle.css'
 import * as allIcons from "ionicons/icons";
@@ -19,7 +20,8 @@ const app = createApp(App)
 
 const components = {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
-  IonRouterOutlet, IonIcon
+  IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
+  IonItem
 };
 
 Object.entries(components).forEach(([name, component]) => {
