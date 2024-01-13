@@ -43,7 +43,18 @@ import L from "leaflet";
 export default {
   data() {
     return {
-      map: null
+      map: null,
+      bp: L.icon({iconUrl: "bp.png", iconAnchor:[20, 26]}),
+      captage: L.icon({iconUrl: "captage.png", iconAnchor:[20, 27]}),
+      forage: L.icon({iconUrl: "forage.png", iconAnchor:[20, 13]}),
+      ibombo: L.icon({iconUrl: "ibombo.png", iconAnchor:[18, 27]}),
+      pompe: L.icon({iconUrl: "pompe.png", iconAnchor:[18, 35]}),
+      puit: L.icon({iconUrl: "puit.png", iconAnchor:[19, 20]}),
+      reservoir: L.icon({iconUrl: "reservoir.png", iconAnchor:[20, 30]}),
+      robinnet: L.icon({iconUrl: "robinnet.png", iconAnchor:[20, 26]}),
+      rusengo: L.icon({iconUrl: "rusengo.png", iconAnchor:[20, 12]}),
+      sna: L.icon({iconUrl: "sna.png", iconAnchor:[20, 26]}),
+      vane: L.icon({iconUrl: "vane.png", iconAnchor:[20, 26]}),
     };
   },
   methods:{
@@ -53,7 +64,12 @@ export default {
       window.open(url, '_system');
     },
     mapClicked(event){
-      L.marker(event.latlng).addTo(this.map)
+      let icons = [
+        this.bp, this.captage, this.forage, this.ibombo, this.pompe, this.puit,
+        this.reservoir, this.robinnet, this.rusengo, this.sna, this.vane
+      ]
+      let position = parseInt(Math.random() * icons.length)
+      L.marker(event.latlng, { icon: icons[position] }).addTo(this.map)
     }
   },
   mounted(){
