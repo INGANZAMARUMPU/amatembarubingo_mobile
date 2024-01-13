@@ -27,7 +27,11 @@
       </ion-popover>
     </ion-header>
     <ion-content class="ion-no-padding">
-      <div id="map"></div>
+      <div id="map">
+        <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]">
+          <l-marker :lat-lng="[-3.42966400, 29.92979000]"> </l-marker>
+        </l-map>
+      </div>
     </ion-content>
   </ion-page>
 </template>
@@ -37,9 +41,6 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
 export default {
-  components: {
-    
-  },
   data() {
     return {
       map: null
@@ -50,6 +51,9 @@ export default {
       let text = `Hari akabazo mfise ku bijaniranye n'iyi application Amatembarubingo:\n`
       let url =  `https://wa.me/25761069606?text=${text}`
       window.open(url, '_system');
+    },
+    mapClicked(event){
+      L.marker(event.latlng).addTo(this.map)
     }
   },
   mounted(){
@@ -59,6 +63,7 @@ export default {
       L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
         attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(vue.map);
+      vue.map.on("click", vue.mapClicked, vue)
     }, 10)
   },
   beforeUnmount() {
