@@ -1,97 +1,127 @@
 <template>
-  <ion-page>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>AMATEMBARUBINGO</ion-title>
-        <ion-buttons slot="primary">
-          <ion-button id="menu-toggler">
-            <ion-icon slot="icon-only"
-              :ios="getIcon('ellipsisHorizontal')"
-              :md="getIcon('ellipsisVertical')"/>
-          </ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-      <ion-popover trigger="menu-toggler" dismiss-on-select="true" show-backdrop="false">
-        <ion-content>
-          <ion-list lines="none">
-            <ion-item button routerLink="/profile">
-              <ion-label>Rechercher</ion-label>
-              <ion-icon :src="getIcon('search')"/>
-            </ion-item>
-            <ion-item button @click="demanderAide">
-              <ion-label>Signaler un problème</ion-label>
-              <ion-icon :src="getIcon('logoWhatsapp')"/>
-            </ion-item>
-          </ion-list>
-        </ion-content>
-      </ion-popover>
-    </ion-header>
-    <ion-content class="ion-no-padding">
-      <div id="map">
-        <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]">
-          <l-marker :lat-lng="[-3.42966400, 29.92979000]"> </l-marker>
-        </l-map>
-      </div>
-    </ion-content>
-  </ion-page>
-</template>
-
-<script>
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-
-export default {
-  data() {
-    return {
-      map: null,
-      bp: L.icon({iconUrl: "bp.png", iconAnchor:[20, 26]}),
-      captage: L.icon({iconUrl: "captage.png", iconAnchor:[20, 27]}),
-      forage: L.icon({iconUrl: "forage.png", iconAnchor:[20, 13]}),
-      ibombo: L.icon({iconUrl: "ibombo.png", iconAnchor:[18, 27]}),
-      pompe: L.icon({iconUrl: "pompe.png", iconAnchor:[18, 35]}),
-      puit: L.icon({iconUrl: "puit.png", iconAnchor:[19, 20]}),
-      reservoir: L.icon({iconUrl: "reservoir.png", iconAnchor:[20, 30]}),
-      robinnet: L.icon({iconUrl: "robinnet.png", iconAnchor:[20, 26]}),
-      rusengo: L.icon({iconUrl: "rusengo.png", iconAnchor:[20, 12]}),
-      sna: L.icon({iconUrl: "sna.png", iconAnchor:[20, 26]}),
-      vane: L.icon({iconUrl: "vane.png", iconAnchor:[20, 26]}),
-    };
-  },
-  methods:{
-    demanderAide(){
-      let text = `Hari akabazo mfise ku bijaniranye n'iyi application Amatembarubingo:\n`
-      let url =  `https://wa.me/25761069606?text=${text}`
-      window.open(url, '_system');
+    <ion-page>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+          </ion-buttons>
+          <ion-title>Swipin Test</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-no-padding">
+        <swiper id="swiper"
+          @slideChangeTransitionEnd="e => changeSegment(e)"
+          pager="false" ref="slides">
+          <swiper-slide>
+            <Page1/>
+          </swiper-slide>
+          <swiper-slide>
+            <Page2/>
+          </swiper-slide>
+          <swiper-slide>
+            <Page3/>
+          </swiper-slide>
+          <swiper-slide>
+            <Page4/>
+          </swiper-slide>
+          <swiper-slide>
+            <Page5/>
+          </swiper-slide>
+          <swiper-slide>
+            <Page6/>
+          </swiper-slide>
+          <swiper-slide>
+            <Page7/>
+          </swiper-slide>
+          <swiper-slide>
+            <Page8/>
+          </swiper-slide>
+          <swiper-slide>
+            <Page9/>
+          </swiper-slide>
+        </swiper>
+      </ion-content>
+      <ion-footer>
+        <ion-segment :value="current_segment" @ionChange="e => changePage(e)">
+          <ion-segment-button :value="0">
+            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
+            <ion-label>Page 1</ion-label>
+          </ion-segment-button>
+          <ion-segment-button :value="1">
+            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
+            <ion-label>Page 2</ion-label>
+          </ion-segment-button>
+          <ion-segment-button :value="2">
+            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
+            <ion-label>Page 3</ion-label>
+          </ion-segment-button>
+          <ion-segment-button :value="3">
+            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
+            <ion-label>Page 4</ion-label>
+          </ion-segment-button>
+          <ion-segment-button :value="4">
+            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
+            <ion-label>Page 5</ion-label>
+          </ion-segment-button>
+          <ion-segment-button :value="5">
+            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
+            <ion-label>Page 6</ion-label>
+          </ion-segment-button>
+          <ion-segment-button :value="6">
+            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
+            <ion-label>Page 7</ion-label>
+          </ion-segment-button>
+          <ion-segment-button :value="7">
+            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
+            <ion-label>Page 8</ion-label>
+          </ion-segment-button>
+          <ion-segment-button :value="8">
+            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
+            <ion-label>Page 9</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-footer>
+    </ion-page>
+  </template>
+  
+  <script>
+  import Page1 from "./home_pages/Page1"
+  import Page2 from "./home_pages/Page2"
+  import Page3 from "./home_pages/Page3"
+  import Page4 from "./home_pages/Page4"
+  import Page5 from "./home_pages/Page5"
+  import Page6 from "./home_pages/Page6"
+  import Page7 from "./home_pages/Page7"
+  import Page8 from "./home_pages/Page8"
+  import Page9 from "./home_pages/Page9"
+  
+  export default {
+    components: {
+      Page1, Page2, Page3, Page4, Page5, Page6, Page7, Page8, Page9
     },
-    mapClicked(event){
-      let icons = [
-        this.bp, this.captage, this.forage, this.ibombo, this.pompe, this.puit,
-        this.reservoir, this.robinnet, this.rusengo, this.sna, this.vane
-      ]
-      let position = parseInt(Math.random() * icons.length)
-      L.marker(event.latlng, { icon: icons[position] }).addTo(this.map)
-    }
-  },
-  mounted(){
-    let vue = this
-    window.setTimeout(() => {
-      vue.map = L.map("map").setView([-3.42966400, 29.92979000], 9);
-      L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-        attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(vue.map);
-      vue.map.on("click", vue.mapClicked, vue)
-    }, 10)
-  },
-  beforeUnmount() {
-    if (this.map) {
-      this.map.remove();
+    data(){
+      return {
+        current_segment:0,
+      }
+    },
+    watch:{
+    },
+    methods:{
+      changePage(event){
+        console.log(this.$refs.slides)
+        console.log(event.detail.value)
+        // this.$refs.slides.slideTo(event.detail.value)
+      },
+      changeSegment(event){
+        this.current_segment = event.activeIndex
+      }
+    },
+    mounted(){
     }
   }
+  </script>
+  <style scoped>
+  #swiper{
+    height: 100%;
 }
-</script>
-<style>
-#map{
-  width: 100%;
-  height: 100%;
-}
-</style>
+  </style>

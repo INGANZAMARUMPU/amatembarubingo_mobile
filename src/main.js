@@ -3,11 +3,14 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from 'axios'
+import 'swiper/css';
+import '@ionic/vue/css/ionic-swiper.css';
 import {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
   IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
   IonItem
 } from '@ionic/vue';
+import { Swiper, SwiperSlide } from 'swiper/vue';
 import '@ionic/core/css/ionic.bundle.css'
 import * as allIcons from "ionicons/icons";
 import { App as CapacitorApp } from '@capacitor/app';
@@ -21,7 +24,7 @@ const app = createApp(App)
 const components = {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
   IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
-  IonItem
+  IonItem, Swiper, SwiperSlide,
 };
 
 Object.entries(components).forEach(([name, component]) => {
