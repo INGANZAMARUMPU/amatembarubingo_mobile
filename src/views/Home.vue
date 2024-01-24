@@ -5,13 +5,13 @@
           <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
           </ion-buttons>
-          <ion-title>Swipin Test</ion-title>
+          <ion-title>AMATEMBARUBINGO</ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-no-padding">
         <swiper id="swiper"
           @slideChangeTransitionEnd="e => changeSegment(e)"
-          pager="false" ref="slides">
+          ref="slides">
           <swiper-slide>
             <Page1/>
           </swiper-slide>
@@ -39,45 +39,67 @@
           <swiper-slide>
             <Page9/>
           </swiper-slide>
+          <swiper-slide>
+            <Page10/>
+          </swiper-slide>
+          <swiper-slide>
+            <Page11/>
+          </swiper-slide>
+          <swiper-slide>
+            <Page12/>
+          </swiper-slide>
         </swiper>
       </ion-content>
       <ion-footer>
-        <ion-segment :value="current_segment" @ionChange="e => changePage(e)">
+        <ion-segment scrollable="true" :value="current_segment"
+          @ionChange="e => changePage(e)">
           <ion-segment-button :value="0">
-            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
-            <ion-label>Page 1</ion-label>
+            <div class="img"><img src="vane.png" alt=""></div>
+            <ion-label>Reseau</ion-label>
           </ion-segment-button>
           <ion-segment-button :value="1">
-            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
-            <ion-label>Page 2</ion-label>
+            <div class="img"><img src="ibombo.png" alt=""></div>
+            <ion-label>amabombo</ion-label>
           </ion-segment-button>
-          <ion-segment-button :value="2">
-            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
-            <ion-label>Page 3</ion-label>
+          <ion-segment-button :value="2" title="Branchement privé">
+            <div class="img"><img src="bp.png" alt=""></div>
+            <ion-label>B. Privé</ion-label>
           </ion-segment-button>
           <ion-segment-button :value="3">
-            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
-            <ion-label>Page 4</ion-label>
+            <div class="img"><img src="captage.png" alt=""></div>
+            <ion-label>captages</ion-label>
           </ion-segment-button>
           <ion-segment-button :value="4">
-            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
-            <ion-label>Page 5</ion-label>
+            <div class="img"><img src="pompe.png" alt=""></div>
+            <ion-label>pompes</ion-label>
           </ion-segment-button>
           <ion-segment-button :value="5">
-            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
-            <ion-label>Page 6</ion-label>
+            <div class="img"><img src="puit.png" alt=""></div>
+            <ion-label>puits</ion-label>
           </ion-segment-button>
           <ion-segment-button :value="6">
-            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
-            <ion-label>Page 7</ion-label>
+            <div class="img"><img src="forage.png" alt=""></div>
+            <ion-label>forages</ion-label>
           </ion-segment-button>
           <ion-segment-button :value="7">
-            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
-            <ion-label>Page 8</ion-label>
+            <div class="img"><img src="reservoir.png" alt=""></div>
+            <ion-label>reservoirs</ion-label>
           </ion-segment-button>
           <ion-segment-button :value="8">
-            <ion-icon :icon="getIcon('homeOutline')"></ion-icon>
-            <ion-label>Page 9</ion-label>
+            <div class="img"><img src="rusengo.png"></div>
+            <ion-label>Rusengo</ion-label>
+          </ion-segment-button>
+          <ion-segment-button :value="9">
+            <div class="img"><img src="sna.png" title="sources non amenagées"></div>
+            <ion-label>S. Non Amenag.</ion-label>
+          </ion-segment-button>
+          <ion-segment-button :value="10" title="villages Moderne">
+            <div class="img"><img src="moderne.png"></div>
+            <ion-label>villages M</ion-label>
+          </ion-segment-button>
+          <ion-segment-button :value="11" title="Village collinaire">
+            <div class="img"><img src="collinaire.png"></div>
+            <ion-label>villages C</ion-label>
           </ion-segment-button>
         </ion-segment>
       </ion-footer>
@@ -94,10 +116,13 @@
   import Page7 from "./home_pages/Page7"
   import Page8 from "./home_pages/Page8"
   import Page9 from "./home_pages/Page9"
+  import Page10 from "./home_pages/Page10"
+  import Page11 from "./home_pages/Page11"
+  import Page12 from "./home_pages/Page12"
   
   export default {
     components: {
-      Page1, Page2, Page3, Page4, Page5, Page6, Page7, Page8, Page9
+      Page1, Page2, Page3, Page4, Page5, Page6, Page7, Page8, Page9, Page10, Page11, Page12
     },
     data(){
       return {
@@ -119,9 +144,25 @@
     mounted(){
     }
   }
-  </script>
-  <style scoped>
-  #swiper{
-    height: 100%;
+</script>
+<style scoped>
+#swiper{
+  height: 100%;
 }
-  </style>
+ion-segment-button{
+  display: flex;
+  flex-direction: column;
+}
+ion-segment-button ion-label{
+  margin: 5px auto;  
+}
+ion-segment-button .img{
+  margin-top: 5px;
+  flex-grow: 1;
+  display: flex;
+  align-items: flex-end;
+}
+.img img{
+  height: 30px;
+}
+</style>
