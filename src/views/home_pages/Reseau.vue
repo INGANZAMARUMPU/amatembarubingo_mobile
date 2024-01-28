@@ -3,10 +3,56 @@
     <ion-content>
         <ion-accordion-group>
             <ion-accordion v-for="province in reseaux?.data" :value="province?.nom">
-            <ion-item slot="header" color="light">
-                <ion-label>{{ province.nom }}</ion-label>
-            </ion-item>
-            <div class="ion-padding" slot="content">{{ province }}</div>
+                <ion-item slot="header" color="light">
+                    <ion-label>
+                        {{ province.nom }}
+                        <ion-badge>{{ province.count }}</ion-badge>
+                    </ion-label>
+                    <ion-button fill="clear" size="small" routerLink="/map">
+                        ikarata
+                    </ion-button>
+                </ion-item>
+                <div class="ion-padding" slot="content">
+                    <ion-accordion-group>
+                        <ion-accordion :multiple="true" v-for="commune in province?.data" :value="'commune-'+commune?.nom">
+                            <ion-item slot="header" color="light">
+                                <ion-label>
+                                    {{ commune.nom }}
+                                    <ion-badge>{{ commune.count }}</ion-badge>
+                                </ion-label>
+                                <ion-button fill="clear" size="small" routerLink="/map">
+                                    ikarata
+                                </ion-button>
+                            </ion-item>
+                            <div class="ion-padding" slot="content">
+                                <ion-accordion-group>
+                                    <ion-accordion :multiple="true" v-for="zone in commune?.data" :value="'zone-'+zone?.nom">
+                                        <ion-item slot="header" color="light">
+                                            <ion-label>
+                                                {{ zone.nom }}
+                                                <ion-badge>{{ zone.count }}</ion-badge>
+                                            </ion-label>
+                                            <ion-button fill="clear" size="small" routerLink="/map">
+                                                ikarata
+                                            </ion-button>
+                                        </ion-item>
+                                        <div class="ion-padding" slot="content">
+                                            <ion-item v-for="colline in commune?.data" :value="'colline-'+colline?.nom">
+                                                <ion-label>
+                                                    {{ colline.nom }}
+                                                    <ion-badge>{{ colline.count }}</ion-badge>
+                                                </ion-label>
+                                                <ion-button fill="clear" size="small" routerLink="/map">
+                                                    ikarata
+                                                </ion-button>
+                                            </ion-item>
+                                        </div>
+                                    </ion-accordion>
+                                </ion-accordion-group>
+                            </div>
+                        </ion-accordion>
+                    </ion-accordion-group>
+                </div>
             </ion-accordion>
         </ion-accordion-group>
     </ion-content>
@@ -27,7 +73,6 @@ export default {
         "$route"(to, from){
             if(to.name == "reseau"){
                 if(!this.$store.state.reseaux){
-                    console.log("fetching")
                     this.fetchData()
                 }
             }
@@ -45,7 +90,7 @@ export default {
         },
     },
     mounted(){
-        if(!!this.$store.state.reseaux){
+        if(!this.$store.state.reseaux){
             this.fetchData()
         }
     }
