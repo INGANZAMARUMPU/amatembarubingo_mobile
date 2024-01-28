@@ -1,7 +1,14 @@
 <template>
 <ion-page>
     <ion-content>
-        {{ reseaux }}
+        <ion-accordion-group>
+            <ion-accordion v-for="province in reseaux?.data" :value="province?.nom">
+            <ion-item slot="header" color="light">
+                <ion-label>{{ province.nom }}</ion-label>
+            </ion-item>
+            <div class="ion-padding" slot="content">{{ province }}</div>
+            </ion-accordion>
+        </ion-accordion-group>
     </ion-content>
 </ion-page>
 </template>

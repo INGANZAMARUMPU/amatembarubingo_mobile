@@ -8,7 +8,8 @@ import '@ionic/vue/css/ionic-swiper.css';
 import {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
   IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
-  IonItem, IonFooter, IonMenuButton, IonSegmentButton, IonSegment
+  IonItem, IonFooter, IonMenuButton, IonSegmentButton, IonSegment,
+  IonAccordionGroup, IonAccordion,
 } from '@ionic/vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import '@ionic/core/css/ionic.bundle.css'
@@ -24,7 +25,8 @@ const app = createApp(App)
 const components = {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
   IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
-  IonItem, Swiper, SwiperSlide, IonFooter, IonMenuButton, IonSegmentButton, IonSegment
+  IonItem, Swiper, SwiperSlide, IonFooter, IonMenuButton, IonSegmentButton, IonSegment,
+  IonAccordionGroup, IonAccordion,
 };
 
 Object.entries(components).forEach(([name, component]) => {
