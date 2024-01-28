@@ -13,7 +13,7 @@
     </ion-content>
     <ion-footer>
       <ion-segment scrollable="true" :value="$route.name">
-        <ion-segment-button routerLink="/reseau" value="reseau">
+        <ion-segment-button routerLink="/" value="reseau">
           <div class="img"><img src="vane.png" alt=""></div>
           <ion-label>Reseau</ion-label>
         </ion-segment-button>

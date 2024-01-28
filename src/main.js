@@ -64,6 +64,9 @@ app.mixin({
     },
   },
   computed:{
+    url(){
+      return this.$store.state.url;
+    },
   }
 })
 CapacitorApp.addListener('backButton', ({canGoBack}) => {
