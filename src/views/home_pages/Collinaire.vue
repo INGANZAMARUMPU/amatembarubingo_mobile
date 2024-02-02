@@ -1,13 +1,13 @@
 <template>
-    <ion-page>
-        <ion-content>
-            Collinaire
-        </ion-content>
-    </ion-page>
+    <Template route="collinaire" remote_url="villagecollinaires"/>
 </template>
     
-<script>  
+<script>
+import Template from './Template.vue';  
 export default {
+    components:{
+        Template
+    }
 }
 </script>
 <style scoped>

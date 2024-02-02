@@ -1,13 +1,13 @@
 <template>
-    <ion-page>
-        <ion-content>
-            Captage
-        </ion-content>
-    </ion-page>
+    <Template route="captage" remote_url="captages"/>
 </template>
     
-<script>  
+<script>
+import Template from './Template.vue';  
 export default {
+    components:{
+        Template
+    }
 }
 </script>
 <style scoped>

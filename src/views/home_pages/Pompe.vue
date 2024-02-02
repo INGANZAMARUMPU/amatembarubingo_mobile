@@ -1,13 +1,13 @@
 <template>
-<ion-page>
-    <ion-content>
-    Pompe
-    </ion-content>
-</ion-page>
+    <Template route="pompe" remote_url="pompes"/>
 </template>
     
-<script>  
+<script>
+import Template from './Template.vue';  
 export default {
+    components:{
+        Template
+    }
 }
 </script>
 <style scoped>

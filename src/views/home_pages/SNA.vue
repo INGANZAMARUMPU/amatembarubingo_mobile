@@ -1,13 +1,13 @@
 <template>
-<ion-page>
-    <ion-content>
-        SNA
-    </ion-content>
-</ion-page>
+    <Template route="sna" remote_url="sourcenonamenagees"/>
 </template>
     
-<script>  
+<script>
+import Template from './Template.vue';  
 export default {
+    components:{
+        Template
+    }
 }
 </script>
 <style scoped>

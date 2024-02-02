@@ -1,13 +1,13 @@
 <template>
-<ion-page>
-    <ion-content>
-    Ibombo
-    </ion-content>
-</ion-page>
+    <Template route="ibombo" remote_url="amabombo"/>
 </template>
     
-<script>  
+<script>
+import Template from './Template.vue';  
 export default {
+    components:{
+        Template
+    }
 }
 </script>
 <style scoped>

@@ -1,13 +1,13 @@
 <template>
-    <ion-page>
-        <ion-content>
-            Reservoir
-        </ion-content>
-    </ion-page>
+    <Template route="reservoir" remote_url="reservoirs"/>
 </template>
     
-<script>  
+<script>
+import Template from './Template.vue';  
 export default {
+    components:{
+        Template
+    }
 }
 </script>
 <style scoped>

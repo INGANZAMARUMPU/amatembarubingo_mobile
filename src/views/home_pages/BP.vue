@@ -1,13 +1,13 @@
 <template>
-    <ion-page>
-        <ion-content>
-        BP
-        </ion-content>
-    </ion-page>
+    <Template route="bp" remote_url="branchementprives"/>
 </template>
-  
-<script>  
+    
+<script>
+import Template from './Template.vue';  
 export default {
+    components:{
+        Template
+    }
 }
 </script>
 <style scoped>

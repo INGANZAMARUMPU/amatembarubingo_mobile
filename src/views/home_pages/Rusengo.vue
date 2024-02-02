@@ -1,13 +1,13 @@
 <template>
-    <ion-page>
-        <ion-content>
-            Rusengo
-        </ion-content>
-    </ion-page>
+    <Template route="rusengo" remote_url="sourceamenagees"/>
 </template>
     
-<script>  
+<script>
+import Template from './Template.vue';  
 export default {
+    components:{
+        Template
+    }
 }
 </script>
 <style scoped>
