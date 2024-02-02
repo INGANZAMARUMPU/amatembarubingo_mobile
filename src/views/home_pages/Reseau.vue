@@ -26,18 +26,22 @@
                             </ion-item>
                             <div class="ion-padding" slot="content">
                                 <ion-accordion-group>
-                                    <ion-accordion :multiple="true" v-for="zone in commune?.data" :value="'zone-'+zone?.nom">
+                                    <ion-accordion :multiple="true"
+                                        v-for="zone in commune?.data"
+                                        :value="'zone-'+zone?.nom">
                                         <ion-item slot="header" color="light">
-                                            <ion-label>
-                                                {{ zone.nom }}
-                                                <ion-badge>{{ zone.count }}</ion-badge>
-                                            </ion-label>
-                                            <ion-button fill="clear" size="small" routerLink="/map">
-                                                ikarata
-                                            </ion-button>
+                                            <div class="between" @click="loadAccordion('zone-'+zone?.nom)">
+                                                <ion-label>
+                                                    {{ zone.nom }}
+                                                    <ion-badge>{{ zone.count }}</ion-badge>
+                                                </ion-label>
+                                                <ion-button fill="clear" size="small" routerLink="/map">
+                                                    ikarata
+                                                </ion-button>
+                                            </div>
                                         </ion-item>
-                                        <div class="ion-padding" slot="content">
-                                            <ion-item v-for="colline in commune?.data" :value="'colline-'+colline?.nom">
+                                        <div class="ion-padding" slot="content" v-if="active_zone=='zone-'+zone?.nom">
+                                            <ion-item v-for="colline in zone?.data" :value="'colline-'+colline?.nom">
                                                 <ion-label>
                                                     {{ colline.nom }}
                                                     <ion-badge>{{ colline.count }}</ion-badge>
@@ -64,6 +68,7 @@ export default {
     data(){
         return {
             reseaux: this.$store.state.reseaux,
+            active_zone: null,
         }
     },
     watch:{
@@ -88,6 +93,10 @@ export default {
                 console.error(err); 
             })
         },
+        loadAccordion(zone){
+            this.active_zone = zone
+            console.log(zone)
+        }
     },
     mounted(){
         if(!this.$store.state.reseaux){
@@ -97,4 +106,12 @@ export default {
 }
 </script>
 <style scoped>
+.between{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    position: absolute;
+    padding-right: 40px;
+    z-index: 2;
+}
 </style>
