@@ -16,21 +16,21 @@
                     <ion-accordion-group>
                         <ion-accordion :multiple="true" v-for="commune in province?.data" :value="'commune-'+commune?.nom">
                             <ion-item slot="header" color="light">
-                                <ion-label>
-                                    {{ commune.nom }}
-                                    <ion-badge>{{ commune.count }}</ion-badge>
-                                </ion-label>
-                                <ion-button fill="clear" size="small" routerLink="/map">
-                                    ikarata
-                                </ion-button>
+                                <div class="between" @click="loadCommuneAccordion('commune-'+commune?.nom)">
+                                    <ion-label>
+                                        {{ commune.nom }}
+                                        <ion-badge>{{ commune.count }}</ion-badge>
+                                    </ion-label>
+                                    <ion-button fill="clear" size="small" routerLink="/map">
+                                        ikarata
+                                    </ion-button>
+                                </div>
                             </ion-item>
-                            <div class="ion-padding" slot="content">
+                            <div class="ion-padding" slot="content" v-if="active_commune=='commune-'+commune?.nom">
                                 <ion-accordion-group>
-                                    <ion-accordion :multiple="true"
-                                        v-for="zone in commune?.data"
-                                        :value="'zone-'+zone?.nom">
+                                    <ion-accordion :multiple="true" v-for="zone in commune?.data" :value="'zone-'+zone?.nom">
                                         <ion-item slot="header" color="light">
-                                            <div class="between" @click="loadAccordion('zone-'+zone?.nom)">
+                                            <div class="between" @click="loadZoneAccordion('zone-'+zone?.nom)">
                                                 <ion-label>
                                                     {{ zone.nom }}
                                                     <ion-badge>{{ zone.count }}</ion-badge>
@@ -70,6 +70,7 @@ export default {
         return {
             items: null,
             active_zone: null,
+            active_commune: null,
         }
     },
     watch:{
@@ -91,8 +92,11 @@ export default {
                 console.error(err); 
             })
         },
-        loadAccordion(zone){
+        loadZoneAccordion(zone){
             this.active_zone = zone
+        },
+        loadCommuneAccordion(commune){
+            this.active_commune = commune
         }
     },
     mounted(){

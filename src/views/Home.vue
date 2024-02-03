@@ -9,7 +9,9 @@
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-no-padding">
-      <ion-router-outlet/>
+      <keep-alive>
+        <ion-router-outlet />
+      </keep-alive>
     </ion-content>
     <ion-footer>
       <ion-segment scrollable="true" :value="$route.name">
