@@ -1,38 +1,19 @@
 <template>
   <ion-page>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Map</ion-title>
-        <ion-buttons slot="primary">
-          <ion-button id="menu-toggler">
-            <ion-icon slot="icon-only"
-              :ios="getIcon('ellipsisHorizontal')"
-              :md="getIcon('ellipsisVertical')"/>
-          </ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-      <ion-popover trigger="menu-toggler" dismiss-on-select="true" show-backdrop="false">
-        <ion-content>
-          <ion-list lines="none">
-            <ion-item button routerLink="/profile">
-              <ion-label>Rechercher</ion-label>
-              <ion-icon :src="getIcon('search')"/>
-            </ion-item>
-            <ion-item button @click="demanderAide">
-              <ion-label>Signaler un problème</ion-label>
-              <ion-icon :src="getIcon('logoWhatsapp')"/>
-            </ion-item>
-          </ion-list>
-        </ion-content>
-      </ion-popover>
-    </ion-header>
-    <ion-content class="ion-no-padding">
-      <div id="map">
-        <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]">
-          <l-marker :lat-lng="[-3.42966400, 29.92979000]"> </l-marker>
-        </l-map>
-      </div>
-    </ion-content>
+      <ion-header :translucent="true">
+          <ion-toolbar>
+              <ion-buttons slot="start">
+                  <ion-back-button @click="$router.back()"></ion-back-button>
+              </ion-buttons>
+              <ion-title>FAQ</ion-title>
+          </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-no-padding">
+          <div id="map"></div>
+          <div class="mylocation" title="my location" @click="watchPosition">
+              <img src="/location.png" alt="">
+          </div>
+      </ion-content>
   </ion-page>
 </template>
 
@@ -40,59 +21,135 @@
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-
 export default {
   data() {
-    return {
-      map: null,
-      bp: L.icon({iconUrl: "bp.png", iconAnchor:[20, 26]}),
-      captage: L.icon({iconUrl: "captage.png", iconAnchor:[20, 27]}),
-      forage: L.icon({iconUrl: "forage.png", iconAnchor:[20, 13]}),
-      ibombo: L.icon({iconUrl: "ibombo.png", iconAnchor:[18, 27]}),
-      pompe: L.icon({iconUrl: "pompe.png", iconAnchor:[18, 35]}),
-      puit: L.icon({iconUrl: "puit.png", iconAnchor:[19, 20]}),
-      reservoir: L.icon({iconUrl: "reservoir.png", iconAnchor:[20, 30]}),
-      robinnet: L.icon({iconUrl: "robinnet.png", iconAnchor:[20, 26]}),
-      rusengo: L.icon({iconUrl: "rusengo.png", iconAnchor:[20, 12]}),
-      sna: L.icon({iconUrl: "sna.png", iconAnchor:[20, 26]}),
-      vane: L.icon({iconUrl: "vane.png", iconAnchor:[20, 26]}),
-    };
+      return {
+          layer_control: null,
+          agent_icon: L.icon({iconUrl: "agent.png", iconAnchor:[10, 15],  iconSize: [20, 20],}),
+          my_pos_icon: L.icon({iconUrl: "location.png", iconAnchor:[10, 25],  iconSize: [20, 30],}),
+          waiting_agents: [],
+          overlay: null,
+          agent_layer: null,
+          interval: null,
+          marker: null,
+          my_pos_shown: false
+      };
+  },
+  watch:{
+      "$store.state.agents":{
+          deep:true,
+          handler(new_val){
+              this.loadAgentMarkers(new_val)
+          }
+      },
+      "$store.state.map"(new_val){
+          if(!!new_val) this.displayMarkers()
+      },
   },
   methods:{
-    demanderAide(){
-      let text = `Hari akabazo mfise ku bijaniranye n'iyi application Amatembarubingo:\n`
-      let url =  `https://wa.me/25761069606?text=${text}`
-      window.open(url, '_system');
-    },
-    mapClicked(event){
-      let icons = [
-        this.bp, this.captage, this.forage, this.ibombo, this.pompe, this.puit,
-        this.reservoir, this.robinnet, this.rusengo, this.sna, this.vane
-      ]
-      let position = parseInt(Math.random() * icons.length)
-      L.marker(event.latlng, { icon: icons[position] }).addTo(this.map)
-    }
+      loadAgentMarkers(items){
+          let markers = []
+          for(let agent of items){
+              if(!agent.latitude || !agent.longitude) continue
+              markers.push(
+                  L.marker(
+                      [agent.latitude, agent.longitude],
+                      { icon: this.agent_icon }
+                  ).on("click", () => this.getInfo("agent", agent))
+              )
+          }
+          this.waiting_agents = markers
+          this.displayMarkers()
+      },
+      displayMarkers(){
+          if(!!this.$store.state.map){
+              if(this.waiting_agents.length > 0){
+                  if(!!this.overlay) this.overlay.remove(this.$store.state.map)
+                  if(!!this.agent_layer) this.agent_layer.remove(this.$store.state.map)
+                  this.agent_layer = L.layerGroup(this.waiting_agents)
+                  this.overlay = L.control.layers(this.tileLayer, {
+                      "agents": this.agent_layer
+                  })
+                  this.overlay.addTo(this.$store.state.map)
+                  this.agent_layer.addTo(this.$store.state.map)
+              }
+          }
+      },
+      getInfo(person) {
+          this.$store.state.agent = person;
+          this.$store.state.agent_shown = true
+      },
+      loadMap(){
+          try {
+              this.$store.state.map = L.map("map").setView([-3.42966400, 29.92979000], 9);
+              let osm_layer = L.tileLayer(
+                  "http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+                      attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                  }
+              )
+              this.tileLayer = {
+                  "Open Street Map": osm_layer,
+                  // "Google Maps": gmap_layer,
+              }
+              osm_layer.addTo(this.$store.state.map)
+          } catch (error) {}
+      },
+      watchPosition(){
+          if(this.my_pos_shown){
+              window.clearInterval(this.interval)
+              this.my_pos_shown = !this.my_pos_shown
+              try {
+                  this.marker.removeFrom(this.$store.state.map)
+              } catch (error) {}
+          } else {
+              this.my_pos_shown = !this.my_pos_shown
+              this.interval = setInterval(() => {
+                  navigator.geolocation.getCurrentPosition(x => {
+                      try {
+                          this.marker.removeFrom(this.$store.state.map)
+                      } catch (error) {}
+                      this.marker = L.marker(
+                          [x.coords.latitude, x.coords.longitude],
+                          { icon: this.my_pos_icon }
+                      )
+                      this.marker.addTo(this.$store.state.map)
+                  });
+              }, 1000)
+          }
+      }
   },
   mounted(){
-    let vue = this
-    window.setTimeout(() => {
-      vue.map = L.map("map").setView([-3.42966400, 29.92979000], 9);
-      L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-        attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(vue.map);
-      vue.map.on("click", vue.mapClicked, vue)
-    }, 10)
+      let vue = this
+      window.setTimeout(() => {
+          vue.loadMap()
+      }, 10)
   },
-  beforeUnmount() {
-    if (this.map) {
-      this.map.remove();
-    }
-  }
 }
 </script>
 <style>
 #map{
   width: 100%;
   height: 100%;
+}
+.mylocation{
+  position: fixed;
+  z-index: 401;
+  left: 10px;
+  bottom: 10px;
+  background-color: #fff9;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  border: 2px solid #5555;
+}
+.mylocation:hover{
+  background-color: white;
+}
+.mylocation img{
+  width: 20px;
+  height: 30px;
 }
 </style>

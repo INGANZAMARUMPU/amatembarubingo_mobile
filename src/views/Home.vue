@@ -2,11 +2,29 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-menu-button></ion-menu-button>
-        </ion-buttons>
         <ion-title>AMATEMBARUBINGO</ion-title>
+        <ion-buttons slot="primary">
+          <ion-button id="menu-toggler">
+            <ion-icon slot="icon-only"
+              :ios="getIcon('ellipsisHorizontal')"
+              :md="getIcon('ellipsisVertical')"/>
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
+      <ion-popover trigger="menu-toggler" dismiss-on-select="true" show-backdrop="false">
+        <ion-content>
+          <ion-list lines="none">
+            <ion-item button routerLink="/profile">
+              <ion-label>Rechercher</ion-label>
+              <ion-icon :src="getIcon('search')"/>
+            </ion-item>
+            <ion-item button @click="demanderAide">
+              <ion-label>Signaler un problème</ion-label>
+              <ion-icon :src="getIcon('logoWhatsapp')"/>
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ion-popover>
     </ion-header>
     <ion-content class="ion-no-padding">
       <keep-alive>

@@ -9,7 +9,7 @@ import {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
   IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
   IonItem, IonFooter, IonMenuButton, IonSegmentButton, IonSegment,
-  IonAccordionGroup, IonAccordion, IonBadge, IonCol
+  IonAccordionGroup, IonAccordion, IonBadge, IonCol, IonBackButton
 } from '@ionic/vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import '@ionic/core/css/ionic.bundle.css'
@@ -26,7 +26,7 @@ const components = {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
   IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
   IonItem, Swiper, SwiperSlide, IonFooter, IonMenuButton, IonSegmentButton, IonSegment,
-  IonAccordionGroup, IonAccordion, IonBadge, IonCol
+  IonAccordionGroup, IonAccordion, IonBadge, IonCol, IonBackButton
 };
 
 Object.entries(components).forEach(([name, component]) => {
