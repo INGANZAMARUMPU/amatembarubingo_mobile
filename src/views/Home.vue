@@ -69,10 +69,18 @@ export default {
         axios.get(this.url+`/${url}/`).then(res => {
             for(let item of res.data.results){
                 let lat_long = item.II_5_coordonnees.split(" ")
+                let title = "<table>"
+                for(let key of Object.keys(item)){
+                    let value = item[key]
+                    title += `<tr><td>${key}</td><td>${value}</td></tr>`
+                }
+                title += "</table>"
                 let marker = L.marker(
                     [lat_long[0], lat_long[1]],
                     { icon: this.ibombo }
-                ).on("click", () => this.displayDetails(item))
+                ).bindTooltip(title,{
+                    direction: 'top'
+                })//.on("click", () => this.displayDetails(item))
                 layer.addLayer(marker)
             }
         }).catch(err => {
