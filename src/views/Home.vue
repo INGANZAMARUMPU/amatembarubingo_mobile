@@ -14,9 +14,9 @@
       <ion-popover trigger="menu-toggler" dismiss-on-select="true" show-backdrop="false">
         <ion-content>
           <ion-list lines="none">
-            <ion-item button routerLink="/profile">
-              <ion-label>Rechercher</ion-label>
-              <ion-icon :src="getIcon('search')"/>
+            <ion-item button routerLink="/thematique">
+              <ion-label>Cartes thematiques</ion-label>
+              <ion-icon :src="getIcon('mapOutline')"/>
             </ion-item>
             <ion-item button @click="demanderAide">
               <ion-label>Signaler un problème</ion-label>
@@ -27,98 +27,144 @@
       </ion-popover>
     </ion-header>
     <ion-content class="ion-no-padding">
-      <keep-alive>
-        <ion-router-outlet />
-      </keep-alive>
+        <div id="map"></div>
     </ion-content>
-    <ion-footer>
-      <ion-segment scrollable="true" :value="$route.name">
-        <ion-segment-button routerLink="/" value="reseau">
-          <div class="img"><img src="vane.png" alt=""></div>
-          <ion-label>Reseau</ion-label>
-        </ion-segment-button>
-        <ion-segment-button routerLink="/ibombo" value="ibombo">
-          <div class="img"><img src="ibombo.png" alt=""></div>
-          <ion-label>amabombo</ion-label>
-        </ion-segment-button>
-        <ion-segment-button routerLink="/bp" value="bp" title="Branchement privé">
-          <div class="img"><img src="bp.png" alt=""></div>
-          <ion-label>B. Privé</ion-label>
-        </ion-segment-button>
-        <ion-segment-button routerLink="/captage" value="captage">
-          <div class="img"><img src="captage.png" alt=""></div>
-          <ion-label>captages</ion-label>
-        </ion-segment-button>
-        <ion-segment-button routerLink="/pompe" value="pompe">
-          <div class="img"><img src="pompe.png" alt=""></div>
-          <ion-label>pompes</ion-label>
-        </ion-segment-button>
-        <ion-segment-button routerLink="/puit" value="puit">
-          <div class="img"><img src="puit.png" alt=""></div>
-          <ion-label>puits</ion-label>
-        </ion-segment-button>
-        <ion-segment-button routerLink="/forage" value="forage">
-          <div class="img"><img src="forage.png" alt=""></div>
-          <ion-label>forages</ion-label>
-        </ion-segment-button>
-        <ion-segment-button routerLink="/reservoir" value="reservoir">
-          <div class="img"><img src="reservoir.png" alt=""></div>
-          <ion-label>reservoirs</ion-label>
-        </ion-segment-button>
-        <ion-segment-button routerLink="/rusengo" value="rusengo">
-          <div class="img"><img src="rusengo.png"></div>
-          <ion-label>Rusengo</ion-label>
-        </ion-segment-button>
-        <ion-segment-button routerLink="/sna" value="sna">
-          <div class="img"><img src="sna.png" title="sources non amenagées"></div>
-          <ion-label>S. Non Amenag.</ion-label>
-        </ion-segment-button>
-        <ion-segment-button routerLink="/moderne" value="moderne" title="villages Moderne">
-          <div class="img"><img src="moderne.png"></div>
-          <ion-label>villages M</ion-label>
-        </ion-segment-button>
-        <ion-segment-button routerLink="/collinaire" value="collinaire" title="Village collinaire">
-          <div class="img"><img src="collinaire.png"></div>
-          <ion-label>villages C</ion-label>
-        </ion-segment-button>
-      </ion-segment>
-    </ion-footer>
   </ion-page>
 </template>
   
 <script>
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
 export default {
-  data(){
-    return {
-      current_segment:0,
-    }
+  data() {
+      return {
+          layer_control: null,
+          agent_icon: L.icon({iconUrl: "agent.png", iconAnchor:[10, 15],  iconSize: [20, 20],}),
+          my_pos_icon: L.icon({iconUrl: "location.png", iconAnchor:[10, 25],  iconSize: [20, 30],}),
+          waiting_agents: [],
+          overlay: null,
+          agent_layer: null,
+          interval: null,
+          marker: null,
+          my_pos_shown: false
+      };
+  },
+  watch:{
+      "$store.state.agents":{
+          deep:true,
+          handler(new_val){
+              this.loadAgentMarkers(new_val)
+          }
+      },
+      "$store.state.map"(new_val){
+          if(!!new_val) this.displayMarkers()
+      },
   },
   methods:{
-    changePage(event){
-      console.log(event.target.value)
-      this.$router.push(event.target.value)
-    },
+      loadAgentMarkers(items){
+          let markers = []
+          for(let agent of items){
+              if(!agent.latitude || !agent.longitude) continue
+              markers.push(
+                  L.marker(
+                      [agent.latitude, agent.longitude],
+                      { icon: this.agent_icon }
+                  ).on("click", () => this.getInfo("agent", agent))
+              )
+          }
+          this.waiting_agents = markers
+          this.displayMarkers()
+      },
+      displayMarkers(){
+          if(!!this.$store.state.map){
+              if(this.waiting_agents.length > 0){
+                  if(!!this.overlay) this.overlay.remove(this.$store.state.map)
+                  if(!!this.agent_layer) this.agent_layer.remove(this.$store.state.map)
+                  this.agent_layer = L.layerGroup(this.waiting_agents)
+                  this.overlay = L.control.layers(this.tileLayer, {
+                      "agents": this.agent_layer
+                  })
+                  this.overlay.addTo(this.$store.state.map)
+                  this.agent_layer.addTo(this.$store.state.map)
+              }
+          }
+      },
+      getInfo(person) {
+          this.$store.state.agent = person;
+          this.$store.state.agent_shown = true
+      },
+      loadMap(){
+          try {
+              this.$store.state.map = L.map("map").setView([-3.42966400, 29.92979000], 9);
+              let osm_layer = L.tileLayer(
+                  "http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+                      attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                  }
+              )
+              this.tileLayer = {
+                  "Open Street Map": osm_layer,
+                  // "Google Maps": gmap_layer,
+              }
+              osm_layer.addTo(this.$store.state.map)
+          } catch (error) {}
+      },
+      watchPosition(){
+          if(this.my_pos_shown){
+              window.clearInterval(this.interval)
+              this.my_pos_shown = !this.my_pos_shown
+              try {
+                  this.marker.removeFrom(this.$store.state.map)
+              } catch (error) {}
+          } else {
+              this.my_pos_shown = !this.my_pos_shown
+              this.interval = setInterval(() => {
+                  navigator.geolocation.getCurrentPosition(x => {
+                      try {
+                          this.marker.removeFrom(this.$store.state.map)
+                      } catch (error) {}
+                      this.marker = L.marker(
+                          [x.coords.latitude, x.coords.longitude],
+                          { icon: this.my_pos_icon }
+                      )
+                      this.marker.addTo(this.$store.state.map)
+                  });
+              }, 1000)
+          }
+      }
+  },
+  mounted(){
+      let vue = this
+      window.setTimeout(() => {
+          vue.loadMap()
+      }, 10)
   },
 }
 </script>
-<style scoped>
-#swiper{
+<style>
+#map{
+  width: 100%;
   height: 100%;
 }
-ion-segment-button{
+.mylocation{
+  position: fixed;
+  z-index: 401;
+  left: 10px;
+  bottom: 10px;
+  background-color: #fff9;
+  width: 40px;
+  height: 40px;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  border: 2px solid #5555;
 }
-ion-segment-button ion-label{
-  margin: 5px auto;  
+.mylocation:hover{
+  background-color: white;
 }
-ion-segment-button .img{
-  margin-top: 5px;
-  flex-grow: 1;
-  display: flex;
-  align-items: flex-end;
-}
-.img img{
+.mylocation img{
+  width: 20px;
   height: 30px;
 }
 </style>

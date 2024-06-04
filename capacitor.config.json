@@ -1,0 +1,8 @@
+{
+  "appId": "bi.inganzamarumpu.amazi",
+  "appName": "Amatembarubingo",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}
