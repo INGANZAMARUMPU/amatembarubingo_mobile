@@ -40,20 +40,7 @@ export default {
   data() {
       return {
           layer_control: null,
-          agent_icon: L.icon({iconUrl: "agent.png", iconAnchor:[10, 15],  iconSize: [20, 20],}),
-          
-          reseaudalimentations: [],
-          amabombo: [],
-          branchementprives: [],
-          captages: [],
-          pompes: [],
-          puits: [],
-          forages: [],
-          reservoirs: [],
-          sourceamenagees: [],
-          sourcenonamenagees: [],
-          villagemodernes: [],
-          villagecollinaires: [],
+          ibombo: L.icon({iconUrl: "ibombo.png", iconAnchor:[18, 27]}),
 
           reseaudalimentations_layer: null,
           amabombo_layer: null,
@@ -78,18 +65,20 @@ export default {
       },
   },
   methods:{
-      loadMarkers(items){
-          let markers = []
-          for(let item of items){
-              if(!item.latitude || !item.longitude) continue
-              markers.push(
-                  L.marker(
-                      [item.latitude, item.longitude],
-                      { icon: this.item_icon }
-                  ).on("click", () => this.displayDetails(item))
-              )
-          }
-          return markers;
+      loadMarkers(layer, url){
+        axios.get(this.url+`/${url}/`).then(res => {
+            for(let item of res.data.results){
+                let lat_long = item.II_5_coordonnees.split(" ")
+                let marker = L.marker(
+                    [lat_long[0], lat_long[1]],
+                    { icon: this.ibombo }
+                ).on("click", () => this.displayDetails(item))
+                layer.addLayer(marker)
+            }
+        }).catch(err => {
+            this.$store.state.label = ""
+            console.error(err);
+        })
       },
       displayMarkers(){
           if(!!this.$store.state.map){
@@ -166,8 +155,12 @@ export default {
                 // "Google Maps": gmap_layer,
             }
             osm_layer.addTo(this.$store.state.map)
-            this.$store.state.map.on('layeradd', function(e) {
-                console.log(e.layer.source_url);
+            this.$store.state.map.on('layeradd', e => {
+                if(!!e.layer.source_url) this.loadMarkers(e.target, e.layer.source_url)
+            });
+            this.$store.state.map.on('layerremove', e => {
+                console.log(e)
+                if(!!e.layer.source_url) e.target.clearLayers()
             });
         } catch (error) {}
       },
