@@ -41,102 +41,142 @@ export default {
       return {
           layer_control: null,
           agent_icon: L.icon({iconUrl: "agent.png", iconAnchor:[10, 15],  iconSize: [20, 20],}),
-          my_pos_icon: L.icon({iconUrl: "location.png", iconAnchor:[10, 25],  iconSize: [20, 30],}),
-          waiting_agents: [],
+          
+          reseaudalimentations: [],
+          amabombo: [],
+          branchementprives: [],
+          captages: [],
+          pompes: [],
+          puits: [],
+          forages: [],
+          reservoirs: [],
+          sourceamenagees: [],
+          sourcenonamenagees: [],
+          villagemodernes: [],
+          villagecollinaires: [],
+
+          reseaudalimentations_layer: null,
+          amabombo_layer: null,
+          branchementprives_layer: null,
+          captages_layer: null,
+          pompes_layer: null,
+          puits_layer: null,
+          forages_layer: null,
+          reservoirs_layer: null,
+          sourceamenagees_layer: null,
+          sourcenonamenagees_layer: null,
+          villagemodernes_layer: null,
+          villagecollinaires_layer: null,
+
           overlay: null,
-          agent_layer: null,
-          interval: null,
-          marker: null,
-          my_pos_shown: false
+          
       };
   },
   watch:{
-      "$store.state.agents":{
-          deep:true,
-          handler(new_val){
-              this.loadAgentMarkers(new_val)
-          }
-      },
       "$store.state.map"(new_val){
           if(!!new_val) this.displayMarkers()
       },
   },
   methods:{
-      loadAgentMarkers(items){
+      loadMarkers(items){
           let markers = []
-          for(let agent of items){
-              if(!agent.latitude || !agent.longitude) continue
+          for(let item of items){
+              if(!item.latitude || !item.longitude) continue
               markers.push(
                   L.marker(
-                      [agent.latitude, agent.longitude],
-                      { icon: this.agent_icon }
-                  ).on("click", () => this.getInfo("agent", agent))
+                      [item.latitude, item.longitude],
+                      { icon: this.item_icon }
+                  ).on("click", () => this.displayDetails(item))
               )
           }
-          this.waiting_agents = markers
-          this.displayMarkers()
+          return markers;
       },
       displayMarkers(){
           if(!!this.$store.state.map){
-              if(this.waiting_agents.length > 0){
-                  if(!!this.overlay) this.overlay.remove(this.$store.state.map)
-                  if(!!this.agent_layer) this.agent_layer.remove(this.$store.state.map)
-                  this.agent_layer = L.layerGroup(this.waiting_agents)
-                  this.overlay = L.control.layers(this.tileLayer, {
-                      "agents": this.agent_layer
-                  })
-                  this.overlay.addTo(this.$store.state.map)
-                  this.agent_layer.addTo(this.$store.state.map)
-              }
+            if(!!this.overlay) return
+
+            this.reseaudalimentations_layer = L.layerGroup()
+            this.reseaudalimentations_layer.source_url = "reseaudalimentations"
+            this.amabombo_layer = L.layerGroup()
+            this.amabombo_layer.source_url = "amabombo"
+            this.branchementprives_layer = L.layerGroup()
+            this.branchementprives_layer.source_url = "branchementprives"
+            this.captages_layer = L.layerGroup()
+            this.captages_layer.source_url = "captages"
+            this.pompes_layer = L.layerGroup()
+            this.pompes_layer.source_url = "pompes"
+            this.puits_layer = L.layerGroup()
+            this.puits_layer.source_url = "puits"
+            this.forages_layer = L.layerGroup()
+            this.forages_layer.source_url = "forages"
+            this.reservoirs_layer = L.layerGroup()
+            this.reservoirs_layer.source_url = "reservoirs"
+            this.sourceamenagees_layer = L.layerGroup()
+            this.sourceamenagees_layer.source_url = "sourceamenagees"
+            this.sourcenonamenagees_layer = L.layerGroup()
+            this.sourcenonamenagees_layer.source_url = "sourcenonamenagees"
+            this.villagemodernes_layer = L.layerGroup()
+            this.villagemodernes_layer.source_url = "villagemodernes"
+            this.villagecollinaires_layer = L.layerGroup()
+            this.villagecollinaires_layer.source_url = "villagecollinaires"
+
+            this.overlay = L.control.layers(this.tileLayer, {
+                "Reseaux AEP": this.reseaudalimentations_layer,
+                "Bornes Fontaines": this.amabombo_layer,
+                "Branchement Privés": this.branchementprives_layer,
+                "Captages": this.captages_layer,
+                "Pompes": this.pompes_layer,
+                "Puits": this.puits_layer,
+                "Forages": this.forages_layer,
+                "Reservoirs": this.reservoirs_layer,
+                "Rource Amenagées": this.sourceamenagees_layer,
+                "Source Non Amenagées": this.sourcenonamenagees_layer,
+                "Village Modernes": this.villagemodernes_layer,
+                "Village Collinaires": this.villagecollinaires_layer,
+            })
+            this.overlay.addTo(this.$store.state.map)
+            this.reseaudalimentations_layer.addTo(this.$store.state.map)
+            // this.amabombo_layer.addTo(this.$store.state.map)
+            // this.branchementprives_layer.addTo(this.$store.state.map)
+            // this.captages_layer.addTo(this.$store.state.map)
+            // this.pompes_layer.addTo(this.$store.state.map)
+            // this.puits_layer.addTo(this.$store.state.map)
+            // this.forages_layer.addTo(this.$store.state.map)
+            // this.reservoirs_layer.addTo(this.$store.state.map)
+            // this.sourceamenagees_layer.addTo(this.$store.state.map)
+            // this.sourcenonamenagees_layer.addTo(this.$store.state.map)
+            // this.villagemodernes_layer.addTo(this.$store.state.map)
+            // this.villagecollinaires_layer.addTo(this.$store.state.map)
           }
       },
-      getInfo(person) {
-          this.$store.state.agent = person;
-          this.$store.state.agent_shown = true
+      displayDetails(item) {
+          this.$store.state.item = item;
+          this.$store.state.infos_shown = true
       },
       loadMap(){
-          try {
-              this.$store.state.map = L.map("map").setView([-3.42966400, 29.92979000], 9);
-              let osm_layer = L.tileLayer(
-                  "http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-                      attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                  }
-              )
-              this.tileLayer = {
-                  "Open Street Map": osm_layer,
-                  // "Google Maps": gmap_layer,
-              }
-              osm_layer.addTo(this.$store.state.map)
-          } catch (error) {}
+        try {
+            this.$store.state.map = L.map("map").setView([-3.42966400, 29.92979000], 9);
+            let osm_layer = L.tileLayer(
+                "http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+                    attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                }
+            )
+            this.tileLayer = {
+                "Open Street Map": osm_layer,
+                // "Google Maps": gmap_layer,
+            }
+            osm_layer.addTo(this.$store.state.map)
+            this.$store.state.map.on('layeradd', function(e) {
+                console.log(e.layer.source_url);
+            });
+        } catch (error) {}
       },
-      watchPosition(){
-          if(this.my_pos_shown){
-              window.clearInterval(this.interval)
-              this.my_pos_shown = !this.my_pos_shown
-              try {
-                  this.marker.removeFrom(this.$store.state.map)
-              } catch (error) {}
-          } else {
-              this.my_pos_shown = !this.my_pos_shown
-              this.interval = setInterval(() => {
-                  navigator.geolocation.getCurrentPosition(x => {
-                      try {
-                          this.marker.removeFrom(this.$store.state.map)
-                      } catch (error) {}
-                      this.marker = L.marker(
-                          [x.coords.latitude, x.coords.longitude],
-                          { icon: this.my_pos_icon }
-                      )
-                      this.marker.addTo(this.$store.state.map)
-                  });
-              }, 1000)
-          }
-      }
   },
   mounted(){
       let vue = this
       window.setTimeout(() => {
           vue.loadMap()
+          vue.displayMarkers()
       }, 10)
   },
 }
@@ -145,26 +185,5 @@ export default {
 #map{
   width: 100%;
   height: 100%;
-}
-.mylocation{
-  position: fixed;
-  z-index: 401;
-  left: 10px;
-  bottom: 10px;
-  background-color: #fff9;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 3px;
-  border: 2px solid #5555;
-}
-.mylocation:hover{
-  background-color: white;
-}
-.mylocation img{
-  width: 20px;
-  height: 30px;
 }
 </style>
