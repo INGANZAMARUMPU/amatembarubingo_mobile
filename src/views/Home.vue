@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>AMATEMBARUBINGO</ion-title>
+        <ion-title>INEA 2022</ion-title>
         <ion-buttons slot="primary">
           <ion-button id="menu-toggler">
             <ion-icon slot="icon-only"

@@ -1,6 +1,6 @@
 {
-  "appId": "bi.inganzamarumpu.amazi",
-  "appName": "Amatembarubingo",
+  "appId": "bi.inganzamarumpu.ineamap",
+  "appName": "INEA 2022",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"
