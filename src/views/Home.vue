@@ -40,7 +40,6 @@ export default {
   data() {
       return {
           layer_control: null,
-          ibombo: L.icon({iconUrl: "ibombo.png", iconAnchor:[18, 27]}),
 
           reseaudalimentations_layer: null,
           amabombo_layer: null,
@@ -65,19 +64,20 @@ export default {
       },
   },
   methods:{
-      loadMarkers(layer, url){
+      loadMarkers(layer, url, icon){
         axios.get(this.url+`/${url}/`).then(res => {
             for(let item of res.data.results){
                 let lat_long = item.II_5_coordonnees.split(" ")
                 let title = "<table>"
                 for(let key of Object.keys(item)){
-                    let value = item[key]
-                    title += `<tr><td>${key}</td><td>${value}</td></tr>`
+                    let value = item[key] || "-"
+                    key = key.split("_").splice(2).join(" ") || key
+                    title += `<tr><td><b>${key}</b></td><td>${value}</td></tr>`
                 }
                 title += "</table>"
                 let marker = L.marker(
                     [lat_long[0], lat_long[1]],
-                    { icon: this.ibombo }
+                    { icon: icon }
                 ).bindTooltip(title,{
                     direction: 'top'
                 })//.on("click", () => this.displayDetails(item))
@@ -94,28 +94,51 @@ export default {
 
             this.reseaudalimentations_layer = L.layerGroup()
             this.reseaudalimentations_layer.source_url = "reseaudalimentations"
+            this.reseaudalimentations_layer.icon = L.icon({iconUrl: "vane.png", iconAnchor:[20, 26]})
+
             this.amabombo_layer = L.layerGroup()
             this.amabombo_layer.source_url = "amabombo"
+            this.amabombo_layer.icon = L.icon({iconUrl: "ibombo.png", iconAnchor:[18, 27]})
+            
             this.branchementprives_layer = L.layerGroup()
             this.branchementprives_layer.source_url = "branchementprives"
+            this.branchementprives_layer.icon = L.icon({iconUrl: "bp.png", iconAnchor:[20, 26]})
+            
             this.captages_layer = L.layerGroup()
             this.captages_layer.source_url = "captages"
+            this.captages_layer.icon = L.icon({iconUrl: "captage.png", iconAnchor:[20, 27]})
+            
             this.pompes_layer = L.layerGroup()
             this.pompes_layer.source_url = "pompes"
+            this.pompes_layer.icon = L.icon({iconUrl: "pompe.png", iconAnchor:[18, 35]})
+            
             this.puits_layer = L.layerGroup()
             this.puits_layer.source_url = "puits"
+            this.puits_layer.icon = L.icon({iconUrl: "puit.png", iconAnchor:[19, 20]})
+            
             this.forages_layer = L.layerGroup()
             this.forages_layer.source_url = "forages"
+            this.forages_layer.icon = L.icon({iconUrl: "forage.png", iconAnchor:[20, 13]})
+            
             this.reservoirs_layer = L.layerGroup()
             this.reservoirs_layer.source_url = "reservoirs"
+            this.reservoirs_layer.icon = L.icon({iconUrl: "reservoir.png", iconAnchor:[20, 30]})
+            
             this.sourceamenagees_layer = L.layerGroup()
             this.sourceamenagees_layer.source_url = "sourceamenagees"
+            this.sourceamenagees_layer.icon = L.icon({iconUrl: "rusengo.png", iconAnchor:[20, 12]})
+            
             this.sourcenonamenagees_layer = L.layerGroup()
             this.sourcenonamenagees_layer.source_url = "sourcenonamenagees"
+            this.sourcenonamenagees_layer.icon = L.icon({iconUrl: "sna.png", iconAnchor:[20, 26]})
+            
             this.villagemodernes_layer = L.layerGroup()
             this.villagemodernes_layer.source_url = "villagemodernes"
+            this.villagemodernes_layer.icon = L.icon({iconUrl: "moderne.png", iconAnchor:[22, 20]})
+            
             this.villagecollinaires_layer = L.layerGroup()
             this.villagecollinaires_layer.source_url = "villagecollinaires"
+            this.villagecollinaires_layer.icon = L.icon({iconUrl: "collinaire.png", iconAnchor:[25, 48]})
 
             this.overlay = L.control.layers(this.tileLayer, {
                 "Reseaux AEP": this.reseaudalimentations_layer,
@@ -164,7 +187,7 @@ export default {
             }
             osm_layer.addTo(this.$store.state.map)
             this.$store.state.map.on('layeradd', e => {
-                if(!!e.layer.source_url) this.loadMarkers(e.target, e.layer.source_url)
+                if(!!e.layer.source_url) this.loadMarkers(e.target, e.layer.source_url, e.layer.icon)
             });
             this.$store.state.map.on('layerremove', e => {
                 console.log(e)
