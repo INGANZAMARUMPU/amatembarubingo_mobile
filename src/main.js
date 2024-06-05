@@ -64,6 +64,66 @@ app.mixin({
         res.present();
       });
     },
+    generateGeoMarker(item){
+      let lat_long = item.II_5_coordonnees.split(" ")
+      let title = "<table>"
+      for(let key of Object.keys(item)){
+          let value = item[key] || "-"
+          key = key.split("_").splice(2).join(" ") || key
+          title += `<tr><td><b>${key}</b></td><td>${value}</td></tr>`
+      }
+      title += "</table>"
+      let marker = L.circleMarker(
+          [lat_long[0], lat_long[1]],
+          { radius: 5 }
+      ).bindTooltip(title,{
+          direction: 'top'
+      })
+      return marker
+    },
+    performDownload(name, url, array, callback){
+      this.$store.state.logs = `gukwega ${url}...`
+      if(!url) url = this.url+`/${name}/`
+      axios.get(url).then(res => {
+        let progress = res.data.count / 100
+        let page = res.data.next.split("page=")[1] || progress
+        this.$store.state.logs = `${page}/${progress} gukwega ${url}`
+        for(let item of res.data.results){
+          array.push(this.generateGeoMarker(item))
+        }
+        // if(!!res.data.next) this.performDownload(name, res.data.next, array)
+      }).catch(err => {
+      }).finally(() => {
+        if(!!callback) callback()
+      })
+    },
+    downloadMarkers(callback){
+      this.performDownload(
+        "reseaudalimentations", null, this.$store.state.reseaudalimentations, () => this.performDownload(
+          "sourcenonamenagees", null, this.$store.state.sourcenonamenagees, () => this.performDownload(
+            "branchementprives", null, this.$store.state.branchementprives, () => this.performDownload(
+              "sourceamenagees", null, this.$store.state.sourceamenagees, () => this.performDownload(
+                "villagemodernes", null, this.$store.state.villagemodernes, () => this.performDownload(
+                  "reservoirs", null, this.$store.state.reservoirs, () => this.performDownload(
+                    "captages", null, this.$store.state.captages, () => this.performDownload(
+                      "amabombo", null, this.$store.state.amabombo, () => this.performDownload(
+                        "forages", null, this.$store.state.forages, () => this.performDownload(
+                          "puits", null, this.$store.state.puits, () => this.performDownload(
+                            "pompes", null, this.$store.state.pompes, () => {
+                              if(!!callback) callback()
+                            }
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    }
   },
   computed:{
     url(){
