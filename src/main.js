@@ -3,15 +3,12 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from 'axios'
-import 'swiper/css';
-import '@ionic/vue/css/ionic-swiper.css';
 import {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
   IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
-  IonItem, IonFooter, IonMenuButton, IonSegmentButton, IonSegment,
+  IonItem, IonFooter, IonMenuButton, IonSegmentButton, IonSegment, toastController,
   IonAccordionGroup, IonAccordion, IonBadge, IonCol, IonBackButton
 } from '@ionic/vue';
-import { Swiper, SwiperSlide } from 'swiper/vue';
 import '@ionic/core/css/ionic.bundle.css'
 import * as allIcons from "ionicons/icons";
 import { App as CapacitorApp } from '@capacitor/app';
@@ -25,7 +22,7 @@ const app = createApp(App)
 const components = {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
   IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
-  IonItem, Swiper, SwiperSlide, IonFooter, IonMenuButton, IonSegmentButton, IonSegment,
+  IonItem, IonFooter, IonMenuButton, IonSegmentButton, IonSegment,
   IonAccordionGroup, IonAccordion, IonBadge, IonCol, IonBackButton
 };
 
@@ -38,31 +35,43 @@ app.mixin({
     getIcon(name) {
       return allIcons[name];
     },
-    money(x) {
-      let cash = parseFloat(x).toFixed(0)
-      if(!x) return "0";
-      return cash.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    },
-    logOut(x) {
-      alertController.create({
-        header: 'Attention!',
-        message: 'Voulez-vous vraiment vous deconnecter?',
+    makeToast(title, message="", duration=5000, callback, callback_text="OK"){
+      if(message.toString().includes("</div>")){
+        message = "Sorry, something went wrong!"
+      }
+      toastController.create({
+        header: title,
+        message: this.cleanString(message).slice(0, 240),
+        icon: this.getIcon('informationCircleOutline'),
+        duration:duration,
         buttons: [
           {
-            text: 'laisser',
-            role: 'cancel'
-          },
-          {
-            text: 'OUI',
-            handler: () => {
-              localStorage.clear() 
-              this.$store.state.user = null
-            },
-          },
-        ],
-      }).then(res => {
-        res.present();
+            text: callback_text,
+            handler: callback
+          }
+        ]
+      }).then(toast => {
+        toast.present();
       });
+    },
+    cleanString(str){
+      if (!str) return "";
+      if(typeof(str)=='object'){
+        let string = ""
+        for( let [clef, valeur] of Object.entries(str)){
+          if(typeof(valeur)=='object'){
+            let child = ""
+            for( let [key, value] of Object.entries(valeur)){
+              child += ` ${value} `
+            }
+            valeur = child;
+          }
+          string+=`${clef.toUpperCase()}: ${valeur}`
+        }
+        return string;
+      };
+      str = str.toString();
+      return str.replace( /(<([^>]+)>)/ig, '');
     },
     generateGeoMarker(item){
       let lat_long = item.II_5_coordonnees.split(" ")
@@ -82,18 +91,20 @@ app.mixin({
       return marker
     },
     performDownload(name, url, array, callback){
-      this.$store.state.logs = `gukwega ${url}...`
       if(!url) url = this.url+`/${name}/`
       axios.get(url).then(res => {
-        let progress = res.data.count / 100
+        let progress = Math.ceil(res.data.count / 100)
         let page = res.data.next.split("page=")[1] || progress
-        this.$store.state.logs = `${page}/${progress} gukwega ${url}`
+        this.$store.state.fetch_progress[name].level = page
+        this.$store.state.fetch_progress[name].max = progress
         for(let item of res.data.results){
           array.push(this.generateGeoMarker(item))
         }
-        // if(!!res.data.next) this.performDownload(name, res.data.next, array)
+        if(!!res.data.next)
+          this.performDownload(name, res.data.next, array, callback)
+        else
+          if(!!callback) callback()
       }).catch(err => {
-      }).finally(() => {
         if(!!callback) callback()
       })
     },

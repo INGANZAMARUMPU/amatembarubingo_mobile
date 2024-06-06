@@ -18,10 +18,6 @@
               <ion-label>Cartes thematiques</ion-label>
               <ion-icon :src="getIcon('mapOutline')"/>
             </ion-item>
-            <ion-item button routerLink="/test">
-              <ion-label>Test</ion-label>
-              <ion-icon :src="getIcon('mapOutline')"/>
-            </ion-item>
             <ion-item button @click="demanderAide">
               <ion-label>Signaler un problème</ion-label>
               <ion-icon :src="getIcon('logoWhatsapp')"/>
@@ -31,10 +27,14 @@
       </ion-popover>
     </ion-header>
     <ion-content class="ion-no-padding">
-      <div>
-        {{ $store.state.logs }}
-      </div>
       <div id="map"></div>
+      <div class="progression" v-if="is_fetching">
+        <h3>Gukwega ibiharuro</h3>
+        <div v-for="pair in Object.entries($store.state.fetch_progress)" class="pair">
+          <div>{{ pair[1].name }}</div>
+          <div>{{ pair[1].level }}/{{ pair[1].max }}</div>
+        </div>
+      </div>
     </ion-content>
   </ion-page>
 </template>
@@ -52,30 +52,11 @@ import "../leaflet.featuregroup.subgroup"
 export default {
   data() {
       return {
-          layer_control: null,
-
-          reseaudalimentations_layer: null,
-          amabombo_layer: null,
-          branchementprives_layer: null,
-          captages_layer: null,
-          pompes_layer: null,
-          puits_layer: null,
-          forages_layer: null,
-          reservoirs_layer: null,
-          sourceamenagees_layer: null,
-          sourcenonamenagees_layer: null,
-          villagemodernes_layer: null,
-          villagecollinaires_layer: null,
-
           overlay: null,
-          
+          is_fetching: false
       };
   },
-  watch:{
-      // "$store.state.map"(new_val){
-      //     if(!!new_val) this.displayMarkers()
-      // },
-  },
+  watch:{},
   methods:{
       // loadMarkers(layer, url, icon){
       //   axios.get(this.url+`/${url}/`).then(res => {
@@ -127,7 +108,9 @@ export default {
   },
   mounted(){
     window.setTimeout(() => this.loadMap(), 10)
+    this.is_fetching = true
     this.downloadMarkers(() => {
+      this.makeToast("Projection en cours", "", 1000*10)
       let map = this.$store.state.map
       let markers = L.markerClusterGroup().addTo(map)
       let reseaudalimentations = this.$store.state.reseaudalimentations
@@ -159,6 +142,7 @@ export default {
       // this.$store.state.map.addLayer(markers)
       let control = L.control.layers(null, overlay, {collapsed: false });
       control.addTo(map);
+      this.is_fetching = false
     })
   },
 }
@@ -167,5 +151,23 @@ export default {
 #map{
   width: 100%;
   height: 100%;
+}
+.progression{
+  position: fixed;
+  z-index: 1000;
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  max-width: 360px;
+  background-color: #eee;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 20px #555;
+  padding: 0 20px 20px 20px;
+  border-radius: 5px;
+}
+.pair{
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
 }
 </style>

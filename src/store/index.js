@@ -23,6 +23,19 @@ export default new Vuex.Store({
     sourcenonamenagees: [],
     villagemodernes: [],
     villagecollinaires: [],
+    fetch_progress:{
+      reseaudalimentations:{name:"Reseaux d' alimentations", level:0, max:0},
+      sourcenonamenagees:{name:"Source non-amenagées", level:0, max:0},
+      branchementprives:{name:"Branchements Prives", level:0, max:0},
+      sourceamenagees:{name:"Source Amenagees", level:0, max:0},
+      villagemodernes:{name:"Village Modernes", level:0, max:0},
+      reservoirs:{name:"Reservoirs", level:0, max:0},
+      captages:{name:"Captages", level:0, max:0},
+      amabombo:{name:"Bornes fontaines", level:0, max:0},
+      forages:{name:"Forages", level:0, max:0},
+      puits:{name:"Puits", level:0, max:0},
+      pompes:{name:"Pompes", level:0, max:0}
+    },
 
     // reseaudalimentations_icon: L.icon({iconUrl: "vane.png", iconAnchor:[20, 26]}),
     // amabombo_icon: L.icon({iconUrl: "ibombo.png", iconAnchor:[18, 27]}),
