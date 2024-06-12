@@ -58,36 +58,6 @@ export default {
   },
   watch:{},
   methods:{
-      // loadMarkers(layer, url, icon){
-      //   axios.get(this.url+`/${url}/`).then(res => {
-      //       for(let item of res.data.results){
-      //           let lat_long = item.II_5_coordonnees.split(" ")
-      //           let title = "<table>"
-      //           for(let key of Object.keys(item)){
-      //               let value = item[key] || "-"
-      //               key = key.split("_").splice(2).join(" ") || key
-      //               title += `<tr><td><b>${key}</b></td><td>${value}</td></tr>`
-      //           }
-      //           title += "</table>"
-      //           // let marker = L.marker(
-      //           //     [lat_long[0], lat_long[1]],
-      //           //     { icon: icon }
-      //           // ).bindTooltip(title,{
-      //               //     direction: 'top'
-      //               // })//.on("click", () => this.displayDetails(item))
-      //           let marker = L.circleMarker(
-      //               [lat_long[0], lat_long[1]],
-      //               { radius: 5 }
-      //           ).bindTooltip(title,{
-      //               direction: 'top'
-      //           })//.on("click", () => this.displayDetails(item))
-      //           layer.addLayer(marker)
-      //       }
-      //   }).catch(err => {
-      //       this.$store.state.label = ""
-      //       console.error(err);
-      //   })
-      // },
       loadMap(){
         try {
           this.$store.state.map = L.map("map").setView([-3.42966400, 29.92979000], 9);
@@ -106,6 +76,7 @@ export default {
       }
     },
     changeInMarkers(name, array, callback){
+      this.makeToast(`Projection ${name}...`)
       if(array.length == 0){
         this.selectAll(name, (results) => {
           this.$store.state[name] = []
@@ -149,7 +120,6 @@ export default {
                         this.changeInMarkers("forages", this.$store.state.forages, () => {
                           this.changeInMarkers("pompes", this.$store.state.pompes, () => {
                             this.changeInMarkers("puits", this.$store.state.puits, () => {
-                              console.log(this.$store.state.reseaudalimentations)
                               let overlay = {
                                 "reseaudalimentations" : L.featureGroup.subGroup(markers, this.$store.state.reseaudalimentations).addTo(map),
                                 "amabombo" : L.featureGroup.subGroup(markers, this.$store.state.amabombo).addTo(map),

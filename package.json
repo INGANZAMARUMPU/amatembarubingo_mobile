@@ -15,7 +15,6 @@
     "@capacitor/status-bar": "5.0.6",
     "@ionic/vue": "^7.0.0",
     "@ionic/vue-router": "^7.0.0",
-    "@vue-leaflet/vue-leaflet": "^0.10.1",
     "@vue/compat": "^3.1.0-0",
     "axios": "^1.6.2",
     "core-js": "^3.6.5",
