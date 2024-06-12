@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     url: "http://127.0.0.1:8000/api",
+    // url: "http://84.46.251.167:8001/api",
     reseaux: null,
     item: null,
     info_shown: false,
@@ -28,6 +29,7 @@ export default new Vuex.Store({
       sourcenonamenagees:{name:"Source non-amenagées", level:0, max:0},
       branchementprives:{name:"Branchements Prives", level:0, max:0},
       sourceamenagees:{name:"Source Amenagees", level:0, max:0},
+      villagecollinaires:{name:"Village Collinaires", level:0, max:0},
       villagemodernes:{name:"Village Modernes", level:0, max:0},
       reservoirs:{name:"Reservoirs", level:0, max:0},
       captages:{name:"Captages", level:0, max:0},

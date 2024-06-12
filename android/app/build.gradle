@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "bi.inganzamarumpu.amazi"
+    namespace "bi.inganzamarumpu.ineamap"
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "bi.inganzamarumpu.amazi"
+        applicationId "bi.inganzamarumpu.ineamap"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

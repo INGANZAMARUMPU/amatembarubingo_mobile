@@ -90,21 +90,35 @@ export default {
       // },
       loadMap(){
         try {
-            this.$store.state.map = L.map("map").setView([-3.42966400, 29.92979000], 9);
-            let osm_layer = L.tileLayer(
-                "http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-                    attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                }
-            )
-            this.tileLayer = {
-                "Open Street Map": osm_layer,
-                // "Google Maps": gmap_layer,
-            }
-            osm_layer.addTo(this.$store.state.map)
-        } catch (error) {
-          console.error(error)
-        }
-      },
+          this.$store.state.map = L.map("map").setView([-3.42966400, 29.92979000], 9);
+          let osm_layer = L.tileLayer(
+              "http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+                  attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              }
+          )
+          this.tileLayer = {
+              "Open Street Map": osm_layer,
+              // "Google Maps": gmap_layer,
+          }
+          osm_layer.addTo(this.$store.state.map)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    generateMarkers(name, array=[]){
+      let markers = []
+      if(array.length == 0){
+        array = JSON.parse(window.localStorage.getItem(name)) || []
+      } else {
+        window.localStorage.setItem(name, JSON.stringify(array))
+      }
+      console.log(name, array)
+      for (const item of array) {
+        markers.push(this.generateGeoMarker(this.$store.state.fetch_progress[name]["name"], item))
+      }
+      // array = []
+      return markers;
+    }
   },
   mounted(){
     window.setTimeout(() => this.loadMap(), 10)
@@ -113,18 +127,42 @@ export default {
       this.makeToast("Projection en cours", "", 1000*10)
       let map = this.$store.state.map
       let markers = L.markerClusterGroup().addTo(map)
-      let reseaudalimentations = this.$store.state.reseaudalimentations
-      let amabombo = this.$store.state.amabombo
-      let branchementprives = this.$store.state.branchementprives
-      let captages = this.$store.state.captages
-      let pompes = this.$store.state.pompes
-      let puits = this.$store.state.puits
-      let forages = this.$store.state.forages
-      let reservoirs = this.$store.state.reservoirs
-      let sourceamenagees = this.$store.state.sourceamenagees
-      let sourcenonamenagees = this.$store.state.sourcenonamenagees
-      let villagemodernes = this.$store.state.villagemodernes
-      let villagecollinaires = this.$store.state.villagecollinaires
+      let reseaudalimentations = this.generateMarkers(
+        "reseaudalimentations", this.$store.state.reseaudalimentations
+      )
+      let amabombo = this.generateMarkers(
+        "amabombo", this.$store.state.amabombo
+      )
+      let branchementprives = this.generateMarkers(
+        "branchementprives", this.$store.state.branchementprives
+      )
+      let captages = this.generateMarkers(
+        "captages", this.$store.state.captages
+      )
+      let pompes = this.generateMarkers(
+        "pompes", this.$store.state.pompes
+      )
+      let puits = this.generateMarkers(
+        "puits", this.$store.state.puits
+      )
+      let forages = this.generateMarkers(
+        "forages", this.$store.state.forages
+      )
+      let reservoirs = this.generateMarkers(
+        "reservoirs", this.$store.state.reservoirs
+      )
+      let sourceamenagees = this.generateMarkers(
+        "sourceamenagees", this.$store.state.sourceamenagees
+      )
+      let sourcenonamenagees = this.generateMarkers(
+        "sourcenonamenagees", this.$store.state.sourcenonamenagees
+      )
+      let villagemodernes = this.generateMarkers(
+        "villagemodernes", this.$store.state.villagemodernes
+      )
+      let villagecollinaires = this.generateMarkers(
+        "villagecollinaires", this.$store.state.villagecollinaires
+      )
       let overlay = {
         "reseaudalimentations" : L.featureGroup.subGroup(markers, reseaudalimentations).addTo(map),
         "amabombo" : L.featureGroup.subGroup(markers, amabombo).addTo(map),
@@ -140,7 +178,7 @@ export default {
         "villagecollinaires" : L.featureGroup.subGroup(markers, villagecollinaires).addTo(map),
       }
       // this.$store.state.map.addLayer(markers)
-      let control = L.control.layers(null, overlay, {collapsed: false });
+      let control = L.control.layers(null, overlay, {collapsed: true });
       control.addTo(map);
       this.is_fetching = false
     })
@@ -169,5 +207,13 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 5px 0;
+}
+.leaflet-tooltip{
+  width: 300px;
+  max-width: 400px;
+  position: relative;
+  overflow: hidden;
+  text-wrap: wrap;
+  overflow-wrap: break-word;
 }
 </style>

@@ -73,15 +73,14 @@ app.mixin({
       str = str.toString();
       return str.replace( /(<([^>]+)>)/ig, '');
     },
-    generateGeoMarker(item){
+    generateGeoMarker(name, item){
       let lat_long = item.II_5_coordonnees.split(" ")
-      let title = "<table>"
+      let title = `<b style="text-transform:uppercase;font-size:1.2em">${name}</b><br/>`
       for(let key of Object.keys(item)){
           let value = item[key] || "-"
           key = key.split("_").splice(2).join(" ") || key
-          title += `<tr><td><b>${key}</b></td><td>${value}</td></tr>`
+          title += `<b>${key}: </b><br>${value}<br>`
       }
-      title += "</table>"
       let marker = L.circleMarker(
           [lat_long[0], lat_long[1]],
           { radius: 5 }
@@ -97,13 +96,11 @@ app.mixin({
         let page = res.data.next.split("page=")[1] || progress
         this.$store.state.fetch_progress[name].level = page
         this.$store.state.fetch_progress[name].max = progress
-        for(let item of res.data.results){
-          array.push(this.generateGeoMarker(item))
-        }
+        array.push(...res.data.results)
         if(!!res.data.next)
           this.performDownload(name, res.data.next, array, callback)
         else
-          if(!!callback) callback()
+            callback()
       }).catch(err => {
         if(!!callback) callback()
       })
@@ -114,15 +111,17 @@ app.mixin({
           "sourcenonamenagees", null, this.$store.state.sourcenonamenagees, () => this.performDownload(
             "branchementprives", null, this.$store.state.branchementprives, () => this.performDownload(
               "sourceamenagees", null, this.$store.state.sourceamenagees, () => this.performDownload(
-                "villagemodernes", null, this.$store.state.villagemodernes, () => this.performDownload(
-                  "reservoirs", null, this.$store.state.reservoirs, () => this.performDownload(
-                    "captages", null, this.$store.state.captages, () => this.performDownload(
-                      "amabombo", null, this.$store.state.amabombo, () => this.performDownload(
-                        "forages", null, this.$store.state.forages, () => this.performDownload(
-                          "puits", null, this.$store.state.puits, () => this.performDownload(
-                            "pompes", null, this.$store.state.pompes, () => {
-                              if(!!callback) callback()
-                            }
+                "villagecollinaires", null, this.$store.state.villagecollinaires, () => this.performDownload(
+                  "villagemodernes", null, this.$store.state.villagemodernes, () => this.performDownload(
+                    "reservoirs", null, this.$store.state.reservoirs, () => this.performDownload(
+                      "captages", null, this.$store.state.captages, () => this.performDownload(
+                        "amabombo", null, this.$store.state.amabombo, () => this.performDownload(
+                          "forages", null, this.$store.state.forages, () => this.performDownload(
+                            "puits", null, this.$store.state.puits, () => this.performDownload(
+                              "pompes", null, this.$store.state.pompes, () => {
+                                if(!!callback) callback()
+                              }
+                            )
                           )
                         )
                       )

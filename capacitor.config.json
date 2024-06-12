@@ -3,6 +3,6 @@
   "appName": "INEA 2022",
   "webDir": "dist",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "http"
   }
 }

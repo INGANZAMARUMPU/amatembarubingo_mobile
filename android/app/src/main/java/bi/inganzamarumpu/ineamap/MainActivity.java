@@ -1,4 +1,4 @@
-package bi.inganzamarumpu.amazi;
+package bi.inganzamarumpu.ineamap;
 
 import com.getcapacitor.BridgeActivity;
 
