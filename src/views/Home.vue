@@ -105,19 +105,28 @@ export default {
         console.error(error)
       }
     },
-    generateMarkers(name, array=[]){
-      let markers = []
+    changeInMarkers(name, array, callback){
       if(array.length == 0){
-        array = JSON.parse(window.localStorage.getItem(name)) || []
+        this.selectAll(name, (results) => {
+          this.$store.state[name] = []
+          for (const item of results) {
+            this.$store.state[name].push(
+              this.generateGeoMarker(this.$store.state.fetch_progress[name]["name"], item)
+            )
+          }
+          callback()
+        })
       } else {
-        window.localStorage.setItem(name, JSON.stringify(array))
+        this.insertAll(name, array, (results) => {
+          this.$store.state[name] = []
+          for (const item of results) {
+            this.$store.state[name].push(
+              this.generateGeoMarker(this.$store.state.fetch_progress[name]["name"], item)
+            )
+          }
+          callback()
+        })
       }
-      console.log(name, array)
-      for (const item of array) {
-        markers.push(this.generateGeoMarker(this.$store.state.fetch_progress[name]["name"], item))
-      }
-      // array = []
-      return markers;
     }
   },
   mounted(){
@@ -127,60 +136,50 @@ export default {
       this.makeToast("Projection en cours", "", 1000*10)
       let map = this.$store.state.map
       let markers = L.markerClusterGroup().addTo(map)
-      let reseaudalimentations = this.generateMarkers(
-        "reseaudalimentations", this.$store.state.reseaudalimentations
-      )
-      let amabombo = this.generateMarkers(
-        "amabombo", this.$store.state.amabombo
-      )
-      let branchementprives = this.generateMarkers(
-        "branchementprives", this.$store.state.branchementprives
-      )
-      let captages = this.generateMarkers(
-        "captages", this.$store.state.captages
-      )
-      let pompes = this.generateMarkers(
-        "pompes", this.$store.state.pompes
-      )
-      let puits = this.generateMarkers(
-        "puits", this.$store.state.puits
-      )
-      let forages = this.generateMarkers(
-        "forages", this.$store.state.forages
-      )
-      let reservoirs = this.generateMarkers(
-        "reservoirs", this.$store.state.reservoirs
-      )
-      let sourceamenagees = this.generateMarkers(
-        "sourceamenagees", this.$store.state.sourceamenagees
-      )
-      let sourcenonamenagees = this.generateMarkers(
-        "sourcenonamenagees", this.$store.state.sourcenonamenagees
-      )
-      let villagemodernes = this.generateMarkers(
-        "villagemodernes", this.$store.state.villagemodernes
-      )
-      let villagecollinaires = this.generateMarkers(
-        "villagecollinaires", this.$store.state.villagecollinaires
-      )
-      let overlay = {
-        "reseaudalimentations" : L.featureGroup.subGroup(markers, reseaudalimentations).addTo(map),
-        "amabombo" : L.featureGroup.subGroup(markers, amabombo).addTo(map),
-        "branchementprives" : L.featureGroup.subGroup(markers, branchementprives).addTo(map),
-        "captages" : L.featureGroup.subGroup(markers, captages).addTo(map),
-        "pompes" : L.featureGroup.subGroup(markers, pompes).addTo(map),
-        "puits" : L.featureGroup.subGroup(markers, puits).addTo(map),
-        "forages" : L.featureGroup.subGroup(markers, forages).addTo(map),
-        "reservoirs" : L.featureGroup.subGroup(markers, reservoirs).addTo(map),
-        "sourceamenagees" : L.featureGroup.subGroup(markers, sourceamenagees).addTo(map),
-        "sourcenonamenagees" : L.featureGroup.subGroup(markers, sourcenonamenagees).addTo(map),
-        "villagemodernes" : L.featureGroup.subGroup(markers, villagemodernes).addTo(map),
-        "villagecollinaires" : L.featureGroup.subGroup(markers, villagecollinaires).addTo(map),
-      }
-      // this.$store.state.map.addLayer(markers)
-      let control = L.control.layers(null, overlay, {collapsed: true });
-      control.addTo(map);
-      this.is_fetching = false
+
+      this.changeInMarkers("reseaudalimentations", this.$store.state.reseaudalimentations, () => {
+        this.changeInMarkers("sourcenonamenagees", this.$store.state.sourcenonamenagees, () => {
+          this.changeInMarkers("villagecollinaires", this.$store.state.villagecollinaires, () => {
+            this.changeInMarkers("branchementprives", this.$store.state.branchementprives, () => {
+              this.changeInMarkers("sourceamenagees", this.$store.state.sourceamenagees, () => {
+                this.changeInMarkers("villagemodernes", this.$store.state.villagemodernes, () => {
+                  this.changeInMarkers("reservoirs", this.$store.state.reservoirs, () => {
+                    this.changeInMarkers("amabombo", this.$store.state.amabombo, () => {
+                      this.changeInMarkers("captages", this.$store.state.captages, () => {
+                        this.changeInMarkers("forages", this.$store.state.forages, () => {
+                          this.changeInMarkers("pompes", this.$store.state.pompes, () => {
+                            this.changeInMarkers("puits", this.$store.state.puits, () => {
+                              console.log(this.$store.state.reseaudalimentations)
+                              let overlay = {
+                                "reseaudalimentations" : L.featureGroup.subGroup(markers, this.$store.state.reseaudalimentations).addTo(map),
+                                "amabombo" : L.featureGroup.subGroup(markers, this.$store.state.amabombo).addTo(map),
+                                "branchementprives" : L.featureGroup.subGroup(markers, this.$store.state.branchementprives).addTo(map),
+                                "captages" : L.featureGroup.subGroup(markers, this.$store.state.captages).addTo(map),
+                                "pompes" : L.featureGroup.subGroup(markers, this.$store.state.pompes).addTo(map),
+                                "puits" : L.featureGroup.subGroup(markers, this.$store.state.puits).addTo(map),
+                                "forages" : L.featureGroup.subGroup(markers, this.$store.state.forages).addTo(map),
+                                "reservoirs" : L.featureGroup.subGroup(markers, this.$store.state.reservoirs).addTo(map),
+                                "sourceamenagees" : L.featureGroup.subGroup(markers, this.$store.state.sourceamenagees).addTo(map),
+                                "sourcenonamenagees" : L.featureGroup.subGroup(markers, this.$store.state.sourcenonamenagees).addTo(map),
+                                "villagemodernes" : L.featureGroup.subGroup(markers, this.$store.state.villagemodernes).addTo(map),
+                                "villagecollinaires" : L.featureGroup.subGroup(markers, this.$store.state.villagecollinaires).addTo(map),
+                              }
+                              let control = L.control.layers(null, overlay, {collapsed: true });
+                              control.addTo(map);
+                              this.is_fetching = false
+                              // this.$store.state.map.addLayer(markers)
+                            })
+                          })
+                        })
+                      })
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
     })
   },
 }

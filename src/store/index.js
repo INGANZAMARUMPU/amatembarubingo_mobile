@@ -11,7 +11,7 @@ export default new Vuex.Store({
     item: null,
     info_shown: false,
     logs:"",
-
+    DB: null,
     reseaudalimentations: [],
     amabombo: [],
     branchementprives: [],

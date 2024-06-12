@@ -73,6 +73,58 @@ app.mixin({
       str = str.toString();
       return str.replace( /(<([^>]+)>)/ig, '');
     },
+    serialize(value) {
+      if (typeof value === 'function') return value.toString();
+      if (typeof value === 'object') {
+        var serializeObject = {};
+        for (const [objectKey, objectValue] of Object.entries(value)) {
+          if(!!objectValue)
+            serializeObject[objectKey] = this.serialize(objectValue);
+        }
+        return serializeObject;
+      }
+      return value;
+    },
+    insertAll(storage, data, callback){
+      let transaction
+      try {  
+        transaction = this.$store.state.DB.transaction(storage, "readwrite");
+      } catch (error) {
+        console.error(error)
+        return
+      }
+      let table = transaction.objectStore(storage);
+
+      let i = 0
+      let vue = this
+      putNext();
+      function putNext() {
+        if (i<data.length) {
+          table.put(vue.serialize(data[i])).onsuccess = putNext;
+          ++i;
+        } else {
+          if(!!callback) callback(data);
+        }
+      }
+      transaction.onsuccess = () => {
+        if(!!callback) callback(data)
+      };
+      transaction.onerror = (error) => {
+        console.error(error)
+      };
+    },
+    selectAll(storage, callback){
+      let transaction
+      try {  
+        transaction = this.$store.state.DB.transaction(storage, "readonly");
+      } catch (error) {
+        return
+      }
+      let table = transaction.objectStore(storage);
+      let request = table.getAll()
+      request.onsuccess = () => callback(request.result);
+      request.onerror = (error) => console.error(error);
+    },
     generateGeoMarker(name, item){
       let lat_long = item.II_5_coordonnees.split(" ")
       let title = `<b style="text-transform:uppercase;font-size:1.2em">${name}</b><br/>`
