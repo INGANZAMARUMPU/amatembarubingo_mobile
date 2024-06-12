@@ -159,18 +159,18 @@ app.mixin({
     },
     downloadMarkers(callback){
       this.performDownload(
-        "reseaudalimentations", null, this.$store.state.reseaudalimentations, () => this.performDownload(
-          "sourcenonamenagees", null, this.$store.state.sourcenonamenagees, () => this.performDownload(
-            "branchementprives", null, this.$store.state.branchementprives, () => this.performDownload(
-              "sourceamenagees", null, this.$store.state.sourceamenagees, () => this.performDownload(
-                "villagecollinaires", null, this.$store.state.villagecollinaires, () => this.performDownload(
-                  "villagemodernes", null, this.$store.state.villagemodernes, () => this.performDownload(
-                    "reservoirs", null, this.$store.state.reservoirs, () => this.performDownload(
-                      "captages", null, this.$store.state.captages, () => this.performDownload(
-                        "amabombo", null, this.$store.state.amabombo, () => this.performDownload(
-                          "forages", null, this.$store.state.forages, () => this.performDownload(
-                            "puits", null, this.$store.state.puits, () => this.performDownload(
-                              "pompes", null, this.$store.state.pompes, () => {
+        "reseaudalimentations", null, window.reseaudalimentations, () => this.performDownload(
+          "sourcenonamenagees", null, window.sourcenonamenagees, () => this.performDownload(
+            "branchementprives", null, window.branchementprives, () => this.performDownload(
+              "sourceamenagees", null, window.sourceamenagees, () => this.performDownload(
+                "villagecollinaires", null, window.villagecollinaires, () => this.performDownload(
+                  "villagemodernes", null, window.villagemodernes, () => this.performDownload(
+                    "reservoirs", null, window.reservoirs, () => this.performDownload(
+                      "captages", null, window.captages, () => this.performDownload(
+                        "amabombo", null, window.amabombo, () => this.performDownload(
+                          "forages", null, window.forages, () => this.performDownload(
+                            "puits", null, window.puits, () => this.performDownload(
+                              "pompes", null, window.pompes, () => {
                                 if(!!callback) callback()
                               }
                             )

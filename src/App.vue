@@ -9,6 +9,20 @@
 <script>
 export default {
   mounted(){
+
+    window.reseaudalimentations = []
+    window.amabombo = []
+    window.branchementprives = []
+    window.captages = []
+    window.pompes = []
+    window.puits = []
+    window.forages = []
+    window.reservoirs = []
+    window.sourceamenagees = []
+    window.sourcenonamenagees = []
+    window.villagemodernes = []
+    window.villagecollinaires = []
+
     let openRequest = indexedDB.open("AMATEMBARUBINGO_DB", 1);
     openRequest.onupgradeneeded = function() {
       let db = openRequest.result;
