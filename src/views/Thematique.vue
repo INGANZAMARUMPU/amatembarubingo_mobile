@@ -9,14 +9,14 @@
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-no-padding">
-      <div v-if="!theme" class="chooser" @click="selectMap">
+      <div v-if="!theme" class="chooser" @click="is_selecting = true">
         <div>Choisissez un theme pour voir la carte</div>
         <ion-button>
           Choisir le thème
         </ion-button>
       </div>
       <div v-else class="player">
-        <h1 @click="selectMap">
+        <h1 @click="is_selecting = true">
           {{ theme.theme }}
           <ion-button>
             <ion-icon :src="getIcon('repeat')"/>
@@ -35,19 +35,23 @@
           {{ theme.details }}
         </div>
       </div>
-      <ion-item>
-        <ion-select
-          id="map_chooser"
-          multiple="false"
-          @IonChange="theme = $event.target.value"
-          v-model="theme"
-          cancel-text="reka" ok-text="sawa">
-          <ion-select-option v-for="item in themes" :value="item" @click="console.log(item)">
-            {{ item.theme }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
     </ion-content>
+    <div class="overlayer" v-if="is_selecting">
+      <div class="dialog">
+        <h2>Choisissez le thème</h2>
+        <div class="choices">
+          <div v-for="item in themes" @click="switchTo(item)">
+            <input class="checkbox" type="radio" :label="item.theme"/>
+            {{item.theme}}
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end;">
+          <span @click="is_selecting = false">
+            <ion-button>laisser</ion-button>
+          </span>
+        </div>
+      </div>
+    </div>
   </ion-page>
 </template>
   
@@ -60,7 +64,8 @@ export default {
   data(){
     return {
       theme: null,
-      themes: this.$store.state.themes
+      themes: this.$store.state.themes,
+      is_selecting: true
     }
   },
   watch:{
@@ -80,8 +85,9 @@ export default {
         this.$store.state.themes = JSON.parse(window.localStorage.getItem("themes"))
       })
     },
-    selectMap(){
-      map_chooser.click()
+    switchTo(value){
+      this.theme = value
+      this.is_selecting = false
     }
   },
   mounted(){
@@ -113,6 +119,35 @@ h1{
   margin: auto;
   flex-grow: 1;
   overflow-y: auto
+}
+.overlayer{
+  position: fixed;
+  z-index: 100;
+  height: 100%;
+  width: 100%;
+  background-color: #5555;
+}
+.dialog{
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  max-width: 360px;
+  max-height: 80%;
+  transform: translate(-50%, -50%);
+  padding: 0 20px 20px 20px;
+  border-radius: 5px;
+  font-size: 1.1em;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+.choices{
+  min-height: 40px;
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
 }
 .player{
   height: calc(100% - 10px);

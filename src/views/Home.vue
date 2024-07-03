@@ -32,7 +32,7 @@
     </ion-header>
     <ion-content class="ion-no-padding">
       <div id="map"></div>
-      <div class="progression" v-if="is_fetching">
+      <div class="dialog" v-if="is_fetching">
         <h3>Gukwega ibiharuro</h3>
         <div v-for="pair in Object.entries($store.state.fetch_progress)" class="pair">
           <div>{{ pair[1].name }}</div>
@@ -171,7 +171,7 @@ export default {
   width: 100%;
   height: 100%;
 }
-.progression{
+.dialog{
   position: fixed;
   z-index: 1000;
   top: 50%;
