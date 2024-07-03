@@ -5,8 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    url: "http://127.0.0.1:8000/api",
-    // url: "http://84.46.251.167:8001/api",
+    // url: "http://127.0.0.1:8000/api",
+    url: "http://84.46.251.167:8001/api",
     reseaux: null,
     item: null,
     info_shown: false,

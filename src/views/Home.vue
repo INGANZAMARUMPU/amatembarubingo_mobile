@@ -14,6 +14,10 @@
       <ion-popover trigger="menu-toggler" dismiss-on-select="true" show-backdrop="false">
         <ion-content>
           <ion-list lines="none">
+            <ion-item button @click="downloadData">
+              <ion-label>Mettre à jours les données</ion-label>
+              <ion-icon :src="getIcon('downloadOutline')"/>
+            </ion-item>
             <ion-item button routerLink="/thematique">
               <ion-label>Cartes thematiques</ion-label>
               <ion-icon :src="getIcon('mapOutline')"/>
@@ -98,46 +102,43 @@ export default {
           callback()
         })
       }
-    }
-  },
-  mounted(){
-    window.setTimeout(() => this.loadMap(), 10)
-    this.is_fetching = true
-    this.downloadMarkers(() => {
-      this.makeToast("Projection en cours", "", 1000*10)
-      let map = window.map
-      let markers = L.markerClusterGroup().addTo(map)
-
-      this.changeInMarkers("reseaudalimentations", window.reseaudalimentations, () => {
-        this.changeInMarkers("sourcenonamenagees", window.sourcenonamenagees, () => {
-          this.changeInMarkers("villagecollinaires", window.villagecollinaires, () => {
-            this.changeInMarkers("branchementprives", window.branchementprives, () => {
-              this.changeInMarkers("sourceamenagees", window.sourceamenagees, () => {
-                this.changeInMarkers("villagemodernes", window.villagemodernes, () => {
-                  this.changeInMarkers("reservoirs", window.reservoirs, () => {
-                    this.changeInMarkers("amabombo", window.amabombo, () => {
-                      this.changeInMarkers("captages", window.captages, () => {
-                        this.changeInMarkers("forages", window.forages, () => {
-                          this.changeInMarkers("pompes", window.pompes, () => {
-                            this.changeInMarkers("puits", window.puits, () => {
-                              let overlay = {
-                                "reseaudalimentations" : L.featureGroup.subGroup(markers, window.reseaudalimentations).addTo(map),
-                                "amabombo" : L.featureGroup.subGroup(markers, window.amabombo).addTo(map),
-                                "branchementprives" : L.featureGroup.subGroup(markers, window.branchementprives).addTo(map),
-                                "captages" : L.featureGroup.subGroup(markers, window.captages).addTo(map),
-                                "pompes" : L.featureGroup.subGroup(markers, window.pompes).addTo(map),
-                                "puits" : L.featureGroup.subGroup(markers, window.puits).addTo(map),
-                                "forages" : L.featureGroup.subGroup(markers, window.forages).addTo(map),
-                                "reservoirs" : L.featureGroup.subGroup(markers, window.reservoirs).addTo(map),
-                                "sourceamenagees" : L.featureGroup.subGroup(markers, window.sourceamenagees).addTo(map),
-                                "sourcenonamenagees" : L.featureGroup.subGroup(markers, window.sourcenonamenagees).addTo(map),
-                                "villagemodernes" : L.featureGroup.subGroup(markers, window.villagemodernes).addTo(map),
-                                "villagecollinaires" : L.featureGroup.subGroup(markers, window.villagecollinaires).addTo(map),
-                              }
-                              let control = L.control.layers(null, overlay, {collapsed: true });
-                              control.addTo(map);
-                              this.is_fetching = false
-                              // window.map.addLayer(markers)
+    },
+    displayMarkers(){
+        this.makeToast("Projection en cours", "", 1000*10)
+        let map = window.map
+        let markers = L.markerClusterGroup().addTo(map)
+        this.changeInMarkers("reseaudalimentations", window.reseaudalimentations, () => {
+          this.changeInMarkers("sourcenonamenagees", window.sourcenonamenagees, () => {
+            this.changeInMarkers("villagecollinaires", window.villagecollinaires, () => {
+              this.changeInMarkers("branchementprives", window.branchementprives, () => {
+                this.changeInMarkers("sourceamenagees", window.sourceamenagees, () => {
+                  this.changeInMarkers("villagemodernes", window.villagemodernes, () => {
+                    this.changeInMarkers("reservoirs", window.reservoirs, () => {
+                      this.changeInMarkers("amabombo", window.amabombo, () => {
+                        this.changeInMarkers("captages", window.captages, () => {
+                          this.changeInMarkers("forages", window.forages, () => {
+                            this.changeInMarkers("pompes", window.pompes, () => {
+                              this.changeInMarkers("puits", window.puits, () => {
+                                let overlay = {
+                                  "reseaudalimentations" : L.featureGroup.subGroup(markers, window.reseaudalimentations).addTo(map),
+                                  "amabombo" : L.featureGroup.subGroup(markers, window.amabombo).addTo(map),
+                                  "branchementprives" : L.featureGroup.subGroup(markers, window.branchementprives).addTo(map),
+                                  "captages" : L.featureGroup.subGroup(markers, window.captages).addTo(map),
+                                  "pompes" : L.featureGroup.subGroup(markers, window.pompes).addTo(map),
+                                  "puits" : L.featureGroup.subGroup(markers, window.puits).addTo(map),
+                                  "forages" : L.featureGroup.subGroup(markers, window.forages).addTo(map),
+                                  "reservoirs" : L.featureGroup.subGroup(markers, window.reservoirs).addTo(map),
+                                  "sourceamenagees" : L.featureGroup.subGroup(markers, window.sourceamenagees).addTo(map),
+                                  "sourcenonamenagees" : L.featureGroup.subGroup(markers, window.sourcenonamenagees).addTo(map),
+                                  "villagemodernes" : L.featureGroup.subGroup(markers, window.villagemodernes).addTo(map),
+                                  "villagecollinaires" : L.featureGroup.subGroup(markers, window.villagecollinaires).addTo(map),
+                                }
+                                let control = L.control.layers(null, overlay, {collapsed: true });
+                                control.addTo(map);
+                                this.is_fetching = false
+                                console.log("BOOOM")
+                                // window.map.addLayer(markers)
+                              })
                             })
                           })
                         })
@@ -149,8 +150,19 @@ export default {
             })
           })
         })
+    },
+    downloadData(){
+      this.is_fetching = true
+      this.downloadMarkers(() => {
+        this.displayMarkers()
       })
-    })
+    }
+  },
+  mounted(){
+    window.setTimeout(() => {
+      this.loadMap()
+      this.displayMarkers()
+    }, 10)
   },
 }
 </script>

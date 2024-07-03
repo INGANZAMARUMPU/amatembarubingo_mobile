@@ -31,15 +31,18 @@
           {{ theme.details }}
         </div>
       </div>
-      <ion-select
-        id="map_chooser"
-        multiple="false"
-        @IonChange="theme = $event.target.value"
-        cancel-text="reka" ok-text="sawa">
-        <ion-select-option v-for="item in themes" :value="item">
-          {{ item.theme }}
-        </ion-select-option>
-      </ion-select>
+      <ion-item>
+        <ion-select
+          id="map_chooser"
+          multiple="false"
+          @IonChange="theme = $event.target.value"
+          v-model="theme"
+          cancel-text="reka" ok-text="sawa">
+          <ion-select-option v-for="item in themes" :value="item" @click="console.log(item)">
+            {{ item.theme }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
     </ion-content>
   </ion-page>
 </template>
