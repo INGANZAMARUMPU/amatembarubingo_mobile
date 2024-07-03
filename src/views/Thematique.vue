@@ -23,9 +23,13 @@
           </ion-button>
         </h1>
         <div class="map">
-          <v-zoomer>
-            <img :src="theme.carte" alt="">
-          </v-zoomer>
+          <PDFViewer
+            :source="theme.carte"
+            :controls="['zoom', 'download']"
+            :settings="{'defaultZoom':150}"
+            :download="{'source': theme.carte, 'filename': theme.theme}"
+            style="height: 100%; width: 100%"
+          />
         </div>
         <div style="padding: 10px;">
           {{ theme.details }}
@@ -48,10 +52,10 @@
 </template>
   
 <script>
-import VueZoomer from 'vue-zoomer'
+import PDFViewer from 'pdf-viewer-vue'
 export default {
   components: {
-    VZoomer: VueZoomer.Zoomer
+    PDFViewer
   },
   data(){
     return {

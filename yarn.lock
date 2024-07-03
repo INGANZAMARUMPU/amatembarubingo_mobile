@@ -5504,6 +5504,18 @@
   "resolved" "https://registry.npmjs.org/path-type/-/path-type-4.0.0.tgz"
   "version" "4.0.0"
 
+"pdf-viewer-vue@^0.2.7":
+  "integrity" "sha512-InIw7JrvLLogXYWCz/zBuUqy44E8cKXke2NCCR/bfwYMS0xC4hWOCpyLe2fFaEqW0uYGVQa6CFfGPE7EQea2AQ=="
+  "resolved" "https://registry.npmjs.org/pdf-viewer-vue/-/pdf-viewer-vue-0.2.7.tgz"
+  "version" "0.2.7"
+  dependencies:
+    "pdfjs-dist" "2.12.313"
+
+"pdfjs-dist@2.12.313":
+  "integrity" "sha512-1x6iXO4Qnv6Eb+YFdN5JdUzt4pAkxSp3aLAYPX93eQCyg/m7QFzXVWJHJVtoW48CI8HCXju4dSkhQZwoheL5mA=="
+  "resolved" "https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-2.12.313.tgz"
+  "version" "2.12.313"
+
 "pend@~1.2.0":
   "integrity" "sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg=="
   "resolved" "https://registry.npmjs.org/pend/-/pend-1.2.0.tgz"
@@ -7029,12 +7041,7 @@
   "resolved" "https://registry.npmjs.org/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz"
   "version" "1.9.1"
 
-"vue-zoomer@^0.3.10":
-  "integrity" "sha512-wfdiGpCJVNvCGbD0YCaVbE0m8hlw3VWWp8L5baRfe8VvSSTYG568r6KO6KsksSpOPTywLRCctIEP8Ctxfdb8Kg=="
-  "resolved" "https://registry.npmjs.org/vue-zoomer/-/vue-zoomer-0.3.10.tgz"
-  "version" "0.3.10"
-
-"vue@*", "vue@^2 || ^3.2.13", "vue@^3.2.0", "vue@^3.4.5", "vue@3.3.13", "vue@3.4.5":
+"vue@*", "vue@^2 || ^3.2.13", "vue@^2.x || ^3.x", "vue@^3.2.0", "vue@^3.4.5", "vue@3.3.13", "vue@3.4.5":
   "integrity" "sha512-VH6nHFhLPjgu2oh5vEBXoNZxsGHuZNr3qf4PHClwJWw6IDqw6B3x+4J+ABdoZ0aJuT8Zi0zf3GpGlLQCrGWHrw=="
   "resolved" "https://registry.npmjs.org/vue/-/vue-3.4.5.tgz"
   "version" "3.4.5"
