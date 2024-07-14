@@ -1,6 +1,6 @@
 {
   "appId": "bi.inganzamarumpu.ineamap",
-  "appName": "INEA 2022",
+  "appName": "INEA 2024",
   "webDir": "dist",
   "server": {
     "androidScheme": "http"

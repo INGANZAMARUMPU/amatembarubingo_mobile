@@ -8,8 +8,9 @@
 </style>
 <script>
 export default {
+  methods:{
+  },
   mounted(){
-
     window.reseaudalimentations = []
     window.amabombo = []
     window.branchementprives = []
@@ -44,6 +45,7 @@ export default {
     };
     openRequest.onsuccess = async () => {
       this.$store.state.DB = openRequest.result;
+      this.loadData()
     };
   },
 }

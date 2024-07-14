@@ -5,7 +5,7 @@
         <ion-buttons slot="start">
             <ion-back-button @click="$router.back()"></ion-back-button>
         </ion-buttons>
-        <ion-title>INEA 2022</ion-title>
+        <ion-title>INEA 2024</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-no-padding">
@@ -28,7 +28,7 @@
             :controls="['zoom', 'download']"
             :settings="{'defaultZoom':150}"
             :download="{'source': theme.carte, 'filename': theme.theme}"
-            style="height: 100%; width: 100%"
+            style="height: 100%; min-width: 100%"
           />
         </div>
         <div style="padding: 10px;">
@@ -41,8 +41,10 @@
         <h2>Choisissez le thème</h2>
         <div class="choices">
           <div v-for="item in themes" @click="switchTo(item)">
-            <input class="checkbox" type="radio" :label="item.theme"/>
             {{item.theme}}
+          </div>
+          <div>
+            {{this.$store.state.label}}
           </div>
         </div>
         <div style="display: flex; justify-content: flex-end;">
@@ -80,9 +82,10 @@ export default {
         this.$store.state.themes = res.data.results
         window.localStorage.setItem("themes", JSON.stringify(this.$store.state.themes))
       }).catch(err => {
-        this.$store.state.label = ""
         console.error(err);
         this.$store.state.themes = JSON.parse(window.localStorage.getItem("themes"))
+      }).finally(() => {
+        this.$store.state.label = ""
       })
     },
     switchTo(value){
@@ -118,7 +121,6 @@ h1{
   width: calc(100% - 20px);
   margin: auto;
   flex-grow: 1;
-  overflow-y: auto
 }
 .overlayer{
   position: fixed;
@@ -154,7 +156,7 @@ h1{
   display: flex;
   flex-direction: column;
 }
-img{
+/* .pdf-viewer {
   min-width: 100%;
-}
+} */
 </style>

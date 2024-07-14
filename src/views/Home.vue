@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>INEA 2022</ion-title>
+        <ion-title>INEA 2024</ion-title>
         <ion-buttons slot="primary">
           <ion-button id="menu-toggler">
             <ion-icon slot="icon-only"
@@ -57,7 +57,8 @@ export default {
   data() {
       return {
           overlay: null,
-          is_fetching: false
+          is_fetching: false,
+          failed: 0
       };
   },
   watch:{},
@@ -104,41 +105,57 @@ export default {
       }
     },
     displayMarkers(){
-        this.makeToast("Projection en cours", "", 1000*10)
-        let map = window.map
-        let markers = L.markerClusterGroup().addTo(map)
-        this.changeInMarkers("reseaudalimentations", window.reseaudalimentations, () => {
-          this.changeInMarkers("sourcenonamenagees", window.sourcenonamenagees, () => {
-            this.changeInMarkers("villagecollinaires", window.villagecollinaires, () => {
-              this.changeInMarkers("branchementprives", window.branchementprives, () => {
-                this.changeInMarkers("sourceamenagees", window.sourceamenagees, () => {
-                  this.changeInMarkers("villagemodernes", window.villagemodernes, () => {
-                    this.changeInMarkers("reservoirs", window.reservoirs, () => {
-                      this.changeInMarkers("amabombo", window.amabombo, () => {
-                        this.changeInMarkers("captages", window.captages, () => {
-                          this.changeInMarkers("forages", window.forages, () => {
-                            this.changeInMarkers("pompes", window.pompes, () => {
-                              this.changeInMarkers("puits", window.puits, () => {
-                                let overlay = {
-                                  "reseaudalimentations" : L.featureGroup.subGroup(markers, window.reseaudalimentations).addTo(map),
-                                  "amabombo" : L.featureGroup.subGroup(markers, window.amabombo).addTo(map),
-                                  "branchementprives" : L.featureGroup.subGroup(markers, window.branchementprives).addTo(map),
-                                  "captages" : L.featureGroup.subGroup(markers, window.captages).addTo(map),
-                                  "pompes" : L.featureGroup.subGroup(markers, window.pompes).addTo(map),
-                                  "puits" : L.featureGroup.subGroup(markers, window.puits).addTo(map),
-                                  "forages" : L.featureGroup.subGroup(markers, window.forages).addTo(map),
-                                  "reservoirs" : L.featureGroup.subGroup(markers, window.reservoirs).addTo(map),
-                                  "sourceamenagees" : L.featureGroup.subGroup(markers, window.sourceamenagees).addTo(map),
-                                  "sourcenonamenagees" : L.featureGroup.subGroup(markers, window.sourcenonamenagees).addTo(map),
-                                  "villagemodernes" : L.featureGroup.subGroup(markers, window.villagemodernes).addTo(map),
-                                  "villagecollinaires" : L.featureGroup.subGroup(markers, window.villagecollinaires).addTo(map),
-                                }
-                                let control = L.control.layers(null, overlay, {collapsed: true });
-                                control.addTo(map);
-                                this.is_fetching = false
-                                console.log("BOOOM")
-                                // window.map.addLayer(markers)
-                              })
+      console.log("Projection en cours")
+      if(this.failed < 5){
+        if(window.reseaudalimentations.length == 0){
+          this.failed += 1
+          window.setTimeout(() => {
+            this.makeToast("collecte de données en cours...", "", 1000*2)
+            this.displayMarkers()
+          }, 5000)
+          return
+        }
+      } else {
+        if(window.reseaudalimentations.length == 0){
+          this.failed = 0
+          this.makeToast("Pas de données à projecter. Veuillez les télécharger", "", 1000*5)
+          this.is_fetching = false
+          return
+        }
+      }
+      this.makeToast("Projection en cours", "", 1000*2)
+      let map = window.map
+      let markers = L.markerClusterGroup().addTo(map)
+      this.changeInMarkers("reseaudalimentations", window.reseaudalimentations, () => {
+        this.changeInMarkers("sourcenonamenagees", window.sourcenonamenagees, () => {
+          this.changeInMarkers("villagecollinaires", window.villagecollinaires, () => {
+            this.changeInMarkers("branchementprives", window.branchementprives, () => {
+              this.changeInMarkers("sourceamenagees", window.sourceamenagees, () => {
+                this.changeInMarkers("villagemodernes", window.villagemodernes, () => {
+                  this.changeInMarkers("reservoirs", window.reservoirs, () => {
+                    this.changeInMarkers("amabombo", window.amabombo, () => {
+                      this.changeInMarkers("captages", window.captages, () => {
+                        this.changeInMarkers("forages", window.forages, () => {
+                          this.changeInMarkers("pompes", window.pompes, () => {
+                            this.changeInMarkers("puits", window.puits, () => {
+                              let overlay = {
+                                "reseaudalimentations" : L.featureGroup.subGroup(markers, window.reseaudalimentations).addTo(map),
+                                "amabombo" : L.featureGroup.subGroup(markers, window.amabombo).addTo(map),
+                                "branchementprives" : L.featureGroup.subGroup(markers, window.branchementprives).addTo(map),
+                                "captages" : L.featureGroup.subGroup(markers, window.captages).addTo(map),
+                                "pompes" : L.featureGroup.subGroup(markers, window.pompes).addTo(map),
+                                "puits" : L.featureGroup.subGroup(markers, window.puits).addTo(map),
+                                "forages" : L.featureGroup.subGroup(markers, window.forages).addTo(map),
+                                "reservoirs" : L.featureGroup.subGroup(markers, window.reservoirs).addTo(map),
+                                "sourceamenagees" : L.featureGroup.subGroup(markers, window.sourceamenagees).addTo(map),
+                                "sourcenonamenagees" : L.featureGroup.subGroup(markers, window.sourcenonamenagees).addTo(map),
+                                "villagemodernes" : L.featureGroup.subGroup(markers, window.villagemodernes).addTo(map),
+                                "villagecollinaires" : L.featureGroup.subGroup(markers, window.villagecollinaires).addTo(map),
+                              }
+                              let control = L.control.layers(null, overlay, {collapsed: true });
+                              control.addTo(map);
+                              this.is_fetching = false
+                              // window.map.addLayer(markers)
                             })
                           })
                         })
@@ -150,18 +167,17 @@ export default {
             })
           })
         })
+      })
     },
     downloadData(){
       this.is_fetching = true
-      this.downloadMarkers(() => {
-        this.displayMarkers()
-      })
+      this.downloadMarkers(this.displayMarkers)
     }
   },
   mounted(){
     window.setTimeout(() => {
       this.loadMap()
-      this.displayMarkers()
+      this.loadData(this.displayMarkers)
     }, 10)
   },
 }

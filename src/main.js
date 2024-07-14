@@ -125,6 +125,45 @@ app.mixin({
       request.onsuccess = () => callback(request.result);
       request.onerror = (error) => console.error(error);
     },
+    loadData(callback){
+      this.selectAll("reseaudalimentations", data => {
+        window.reseaudalimentations = data
+        this.selectAll("sourcenonamenagees", data => {
+          window.sourcenonamenagees = data
+          this.selectAll("branchementprives", data => {
+            window.branchementprives = data
+            this.selectAll("sourceamenagees", data => {
+              window.sourceamenagees = data
+              this.selectAll("villagecollinaires", data => {
+                window.villagecollinaires = data
+                this.selectAll("villagemodernes", data => {
+                  window.villagemodernes = data
+                  this.selectAll("reservoirs", data => {
+                    window.reservoirs = data
+                    this.selectAll("captages", data => {
+                      window.captages = data
+                      this.selectAll("amabombo", data => {
+                        window.amabombo = data
+                        this.selectAll("forages", data => {
+                          window.forages = data
+                          this.selectAll("puits", data => {
+                            window.puits = data
+                            this.selectAll("pompes", data => {
+                              window.pompes = data
+                            })
+                          })
+                        })
+                      })
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+      if(!!callback) callback()
+    },
     generateGeoMarker(name, item){
       let lat_long = item.II_5_coordonnees.split(" ")
       let title = `<b style="text-transform:uppercase;font-size:1.2em">${name}</b><br/>`
@@ -149,10 +188,12 @@ app.mixin({
         this.$store.state.fetch_progress[name].level = page
         this.$store.state.fetch_progress[name].max = progress
         array.push(...res.data.results)
-        if(!!res.data.next)
+        if(!!res.data.next){
+          this.insertAll(name, array)
           this.performDownload(name, res.data.next, array, callback)
-        else
-            callback()
+        } else {
+          callback()
+        }
       }).catch(err => {
         if(!!callback) callback()
       })

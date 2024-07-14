@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">INEA 2022</string>
-    <string name="title_activity_main">INEA 2022</string>
+    <string name="app_name">INEA 2024</string>
+    <string name="title_activity_main">INEA 2024</string>
     <string name="package_name">bi.inganzamarumpu.ineamap</string>
     <string name="custom_url_scheme">bi.inganzamarumpu.ineamap</string>
 </resources>
