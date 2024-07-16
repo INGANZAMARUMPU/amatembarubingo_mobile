@@ -36,7 +36,7 @@
         <h3>Gukwega ibiharuro</h3>
         <div v-for="pair in Object.entries($store.state.fetch_progress)" class="pair">
           <div>{{ pair[1].name }}</div>
-          <div>{{ pair[1].level }}/{{ pair[1].max }}</div>
+          <div>{{ (((pair[1].level / pair[1].max) || 0) * 100).toFixed(1) }}/100</div>
         </div>
       </div>
     </ion-content>
@@ -86,8 +86,10 @@ export default {
         this.selectAll(name, (results) => {
           window[name] = []
           for (const item of results) {
+            let lat_long = item.II_5_coordonnees.split(" ")
+            if(!lat_long[1]) continue
             window[name].push(
-              this.generateGeoMarker(this.$store.state.fetch_progress[name]["name"], item)
+              this.generateGeoMarker(this.$store.state.fetch_progress[name]["name"], item, lat_long)
             )
           }
           callback()
@@ -96,8 +98,10 @@ export default {
         this.insertAll(name, array, (results) => {
           window[name] = []
           for (const item of results) {
+            let lat_long = item.II_5_coordonnees.split(" ")
+            if(!lat_long[1]) continue
             window[name].push(
-              this.generateGeoMarker(this.$store.state.fetch_progress[name]["name"], item)
+              this.generateGeoMarker(this.$store.state.fetch_progress[name]["name"], item, lat_long)
             )
           }
           callback()
@@ -105,24 +109,27 @@ export default {
       }
     },
     displayMarkers(){
-      console.log("Projection en cours")
-      if(this.failed < 5){
-        if(window.reseaudalimentations.length == 0){
-          this.failed += 1
-          window.setTimeout(() => {
-            this.makeToast("collecte de données en cours...", "", 1000*2)
-            this.displayMarkers()
-          }, 5000)
-          return
-        }
-      } else {
-        if(window.reseaudalimentations.length == 0){
-          this.failed = 0
+      if(window.reseaudalimentations.length == 0){
           this.makeToast("Pas de données à projecter. Veuillez les télécharger", "", 1000*5)
-          this.is_fetching = false
           return
-        }
       }
+      // if(this.failed < 5){
+      //   if(window.reseaudalimentations.length == 0){
+      //     this.failed += 1
+      //     window.setTimeout(() => {
+      //       this.makeToast("collecte de données en cours...", "", 1000*2)
+      //       this.displayMarkers()
+      //     }, 5000)
+      //     return
+      //   }
+      // } else {
+      //   if(window.reseaudalimentations.length == 0){
+      //     this.failed = 0
+      //     this.makeToast("Pas de données à projecter. Veuillez les télécharger", "", 1000*5)
+      //     this.is_fetching = false
+      //     return
+      //   }
+      // }
       this.makeToast("Projection en cours", "", 1000*2)
       let map = window.map
       let markers = L.markerClusterGroup().addTo(map)
@@ -172,12 +179,18 @@ export default {
     downloadData(){
       this.is_fetching = true
       this.downloadMarkers(this.displayMarkers)
+    },
+    demanderAide(){
+      let text = `Amahoro,\n nari mfise akabazo muri iyi application ya INEA 2024\n`
+      let url =  `https://wa.me/25761069606?text=${text}`
+      window.open(url, '_system');
     }
   },
   mounted(){
     window.setTimeout(() => {
       this.loadMap()
-      this.loadData(this.displayMarkers)
+      window.displayMarkers = this.displayMarkers
+      this.loadData()
     }, 10)
   },
 }

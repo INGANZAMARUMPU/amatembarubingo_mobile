@@ -6,7 +6,7 @@ import axios from 'axios'
 import {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
   IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
-  IonItem, IonFooter, IonMenuButton, IonSegmentButton, IonSegment, toastController,
+  IonFooter, IonMenuButton, IonSegmentButton, IonSegment, toastController,
   IonAccordionGroup, IonAccordion, IonBadge, IonCol, IonBackButton
 } from '@ionic/vue';
 import '@ionic/core/css/ionic.bundle.css'
@@ -22,7 +22,7 @@ const app = createApp(App)
 const components = {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
   IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
-  IonItem, IonFooter, IonMenuButton, IonSegmentButton, IonSegment,
+  IonFooter, IonMenuButton, IonSegmentButton, IonSegment,
   IonAccordionGroup, IonAccordion, IonBadge, IonCol, IonBackButton
 };
 
@@ -150,6 +150,7 @@ app.mixin({
                             window.puits = data
                             this.selectAll("pompes", data => {
                               window.pompes = data
+                              window.displayMarkers()
                             })
                           })
                         })
@@ -162,10 +163,8 @@ app.mixin({
           })
         })
       })
-      if(!!callback) callback()
     },
-    generateGeoMarker(name, item){
-      let lat_long = item.II_5_coordonnees.split(" ")
+    generateGeoMarker(name, item, lat_long){
       let title = `<b style="text-transform:uppercase;font-size:1.2em">${name}</b><br/>`
       for(let key of Object.keys(item)){
           let value = item[key] || "-"
@@ -189,7 +188,6 @@ app.mixin({
         this.$store.state.fetch_progress[name].max = progress
         array.push(...res.data.results)
         if(!!res.data.next){
-          this.insertAll(name, array)
           this.performDownload(name, res.data.next, array, callback)
         } else {
           callback()
