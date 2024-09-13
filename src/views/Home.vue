@@ -14,18 +14,36 @@
       <ion-popover trigger="menu-toggler" dismiss-on-select="true" show-backdrop="false">
         <ion-content>
           <ion-list lines="none">
-            <ion-item button @click="downloadData">
-              <ion-label>Mettre à jours les données</ion-label>
-              <ion-icon :src="getIcon('downloadOutline')"/>
-            </ion-item>
-            <ion-item button routerLink="/thematique">
-              <ion-label>Cartes thematiques</ion-label>
-              <ion-icon :src="getIcon('mapOutline')"/>
-            </ion-item>
-            <ion-item button @click="demanderAide">
-              <ion-label>Signaler un problème</ion-label>
-              <ion-icon :src="getIcon('logoWhatsapp')"/>
-            </ion-item>
+            <div @click="downloadData">
+              <ion-item button>
+                <ion-label>Mettre à jours les données</ion-label>
+                <ion-icon :src="getIcon('downloadOutline')"/>
+              </ion-item>
+            </div>
+            <div>
+              <ion-item button routerLink="/thematique">
+                <ion-label>Cartes thematiques</ion-label>
+                <ion-icon :src="getIcon('mapOutline')"/>
+              </ion-item>
+            </div>
+            <div @click="refresh">
+              <ion-item button>
+                <ion-label>Recharger la carte</ion-label>
+                <ion-icon :src="getIcon('refresh')"/>
+              </ion-item>
+            </div>
+            <div @click="demanderAide">
+              <ion-item button>
+                <ion-label>Signaler un problème</ion-label>
+                <ion-icon :src="getIcon('logoWhatsapp')"/>
+              </ion-item>
+            </div>
+            <div @click="exit">
+              <ion-item button>
+                <ion-label>Fermer l'application</ion-label>
+                <ion-icon :src="getIcon('powerOutline')"/>
+              </ion-item>
+            </div>
           </ion-list>
         </ion-content>
       </ion-popover>
@@ -63,19 +81,25 @@ export default {
   },
   watch:{},
   methods:{
-      loadMap(){
-        try {
-          window.map = L.map("map").setView([-3.42966400, 29.92979000], 9);
-          let osm_layer = L.tileLayer(
-              "http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-                  attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              }
-          )
-          this.tileLayer = {
-              "Open Street Map": osm_layer,
-              // "Google Maps": gmap_layer,
+    refresh(){
+      window.location.reload()
+    },
+    exit(){
+      window.close()
+    },
+    loadMap(){
+      try {
+        window.map = L.map("map").setView([-3.42966400, 29.92979000], 9);
+        let osm_layer = L.tileLayer(
+          "http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+              attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           }
-          osm_layer.addTo(window.map)
+        )
+        this.tileLayer = {
+          "Open Street Map": osm_layer,
+          // "Google Maps": gmap_layer,
+        }
+        osm_layer.addTo(window.map)
       } catch (error) {
         console.error(error)
       }
@@ -109,10 +133,10 @@ export default {
       }
     },
     displayMarkers(){
-      if(window.reseaudalimentations.length == 0){
-          this.makeToast("Pas de données à projecter. Veuillez les télécharger", "", 1000*5)
-          return
-      }
+      // if(window.puits.length == 0){
+      //     this.makeToast("Pas de données à projecter. Veuillez les télécharger", "", 1000*5)
+      //     return
+      // }
       // if(this.failed < 5){
       //   if(window.reseaudalimentations.length == 0){
       //     this.failed += 1
@@ -178,7 +202,10 @@ export default {
     },
     downloadData(){
       this.is_fetching = true
-      this.downloadMarkers(this.displayMarkers)
+      this.downloadMarkers(() => {
+        this.is_fetching = false
+        this.displayMarkers()
+      })
     },
     demanderAide(){
       let text = `Amahoro,\n nari mfise akabazo muri iyi application ya INEA 2024\n`
@@ -190,7 +217,7 @@ export default {
     window.setTimeout(() => {
       this.loadMap()
       window.displayMarkers = this.displayMarkers
-      this.loadData()
+      this.loadData(this.displayMarkers)
     }, 10)
   },
 }

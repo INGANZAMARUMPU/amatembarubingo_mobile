@@ -7,7 +7,7 @@ import {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
   IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
   IonFooter, IonMenuButton, IonSegmentButton, IonSegment, toastController,
-  IonAccordionGroup, IonAccordion, IonBadge, IonCol, IonBackButton
+  IonItem, IonAccordionGroup, IonAccordion, IonBadge, IonCol, IonBackButton
 } from '@ionic/vue';
 import '@ionic/core/css/ionic.bundle.css'
 import * as allIcons from "ionicons/icons";
@@ -22,7 +22,7 @@ const app = createApp(App)
 const components = {
   IonApp, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonicVue,
   IonRouterOutlet, IonIcon, IonList, IonPopover, IonLabel, IonButtons, IonButton,
-  IonFooter, IonMenuButton, IonSegmentButton, IonSegment,
+  IonItem, IonFooter, IonMenuButton, IonSegmentButton, IonSegment,
   IonAccordionGroup, IonAccordion, IonBadge, IonCol, IonBackButton
 };
 
@@ -163,6 +163,7 @@ app.mixin({
           })
         })
       })
+      // if(!!callback) callback()
     },
     generateGeoMarker(name, item, lat_long){
       let title = `<b style="text-transform:uppercase;font-size:1.2em">${name}</b><br/>`
@@ -185,13 +186,18 @@ app.mixin({
         let progress = Math.ceil(res.data.count / 100)
         let page = res.data.next.split("page=")[1] || progress
         this.$store.state.fetch_progress[name].level = page
-        this.$store.state.fetch_progress[name].max = progress
-        array.push(...res.data.results)
-        if(!!res.data.next){
-          this.performDownload(name, res.data.next, array, callback)
-        } else {
-          callback()
-        }
+        // if(this.$store.state.fetch_progress[name].level == 5){
+        //   // GUKWEGA MAX 500 POUR DEMO
+        //   callback()
+        // } else {
+          this.$store.state.fetch_progress[name].max = progress
+          array.push(...res.data.results)
+          if(!!res.data.next){
+            this.performDownload(name, res.data.next, array, callback)
+          } else {
+            callback()
+          }
+        // }
       }).catch(err => {
         if(!!callback) callback()
       })
